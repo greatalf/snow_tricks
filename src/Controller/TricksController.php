@@ -25,7 +25,40 @@ class TricksController extends AbstractController
         $figures = $repo->findAll();
 
         return $this->render('tricks/home.html.twig', ['figures' => $figures]);
-    }  
+    }
+
+    /**
+    * @Route("/tricks/new", name="tricks_create")
+    * @Route("/tricks/{id}/edit", name="tricks_edit")
+    */
+    public function form(Figure $figure = null, Request $request, ObjectManager $manager)
+    {
+        if(!$figure)
+        {
+            $figure = new Figure();            
+        }
+
+        $form = $this->createForm(FigureType::class, $figure);
+        
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            if(!$figure->getId())
+            {
+                $figure->setCreatedAt(new \DateTime());
+                
+            }
+            $manager->persist($figure);
+                $manager->flush();
+
+                return $this->redirectToRoute('tricks_show', ['id' => $figure->getId()]);
+        }
+
+        return $this->render('tricks/create.html.twig', [
+            'formFigure' => $form->createView(),
+            'editMode' => $figure->getId() !== null]);
+    }
 
     /**
      * @Route("/tricks/{id}", name="tricks_show")
