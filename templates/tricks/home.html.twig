@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salut!{% endblock %}
+
+{% block body %}
+    <div style="display: flex;">
+
+    {% for figure in figures %}
+        <div class="card" style="min-width:200px; flex-wrap: wrap; margin: 5px;">
+        <a href="{{ path('tricks_show', {'id': figure.id}) }}">     <img class="card-img-top" src="{{ figure.image }}" alt="Card image" style="width:100%">
+        </a>
+            <div class="card-body">
+                <a href="{{ path('tricks_show', {'id': figure.id}) }}">
+                <h4 style="width:100%; font-size:16px" class="card-title">{{ figure.title }}
+                </a>
+                    <div style="text-align:right">
+                        <a href="{{ path('tricks_edit', {'id': figure.id}) }}"><i class="fa fa-pencil" style="font-size:22px"></i></a>
+                        <a href="#"><i class="fa fa-trash-o" style="font-size:24px"></i></a>
+                    </div>
+                </h4>
+            </div>
+        </div>
+   {% endfor %}
+   
+    </div>
+
+    {# <div style="display: flex;">
+    {% for figure in figures %}
+    <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+            <div class="card-body">
+              <h4 class="card-title">Card title</h4>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
+            </div>
+            <div class="card-footer">
+              <a href="#" class="btn btn-primary">Find Out More!</a>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+    </div> #}
+
+{% endblock %}

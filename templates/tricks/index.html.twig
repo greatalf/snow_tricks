@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salut!{% endblock %}
+
+{% block body %}
+    {% for figure in figures %}
+    <article>
+            <a href="{{ path('tricks_show', {'id': figure.id}) }}" class="btn btn-primary">
+                <img src="{{ figure.image }}" alt="">
+            </a>
+            <h2>{{ figure.title }}</h2>
+    </article>
+   {% endfor %}
+{% endblock %}
