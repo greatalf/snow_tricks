@@ -25,6 +25,14 @@ class TricksController extends AbstractController
         $figures = $repo->findAll();
 
         return $this->render('tricks/home.html.twig', ['figures' => $figures]);
-    }   
+    }  
+
+    /**
+     * @Route("/tricks/{id}", name="tricks_show")
+     */
+    public function show(Figure $figure)
+    {       
+        return $this->render('tricks/show.html.twig', ['figure' => $figure]);
+    } 
 }
 
