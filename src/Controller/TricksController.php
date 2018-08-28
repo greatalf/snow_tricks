@@ -66,6 +66,8 @@ class TricksController extends AbstractController
     public function show(Figure $figure)
     {       
         return $this->render('tricks/show.html.twig', ['figure' => $figure]);
-    } 
+    }
+
+
 }
 
