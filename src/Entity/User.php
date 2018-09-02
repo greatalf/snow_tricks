@@ -3,11 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="Email déjà pris par un autre utilisateur")
+ * @UniqueEntity(fields="username", message="Pseudo déjà pris par un autre utilisateur")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -26,17 +31,17 @@ class User
      */
     private $username;
 
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
+     */
+    private $plainPassword;
+    
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $password;
-
-    public $confirm_password;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $plainPassword;
 
     /**
      * @ORM\Column(type="array")
@@ -47,6 +52,11 @@ class User
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+
+    public function __construct()
+    {
+        $this->roles = array('ROLE_USER');
+    }
 
     public function getId(): ?int
     {
@@ -123,5 +133,14 @@ class User
         $this->isActive = $isActive;
 
         return $this;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
     }
 }

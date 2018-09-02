@@ -70,4 +70,3 @@ class TricksController extends AbstractController
 
 
 }
-

@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Bienvenue sur Snow_Tricks!{% endblock %}</title>
+        <title>{% block title %}Snow_Tricks!{% endblock %}</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://bootswatch.com/4/cerulean/bootstrap.min.css">
         {% block stylesheets %}{% endblock %}
@@ -26,11 +26,13 @@
                         <a class="nav-link" href="#">Se connecter</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('security_registration') }}">S'inscrire</a>
+                        <a class="nav-link" href="{{ path('user_registration') }}">S'inscrire</a>
                     </li>  
                 </ul>   
             </div>
         </nav>
+        {% block img %}{% endblock %}
+        {# <img class="img-responsive container-fluid" src="https://www.rei.com/content/dam/images/Expert%20Advice/Migration/HeroImages/Content_Team_082817_18850_Snowboards_Choose_lg.jpg" style="padding: 0px; border: solid 1px red;"> #}
         <div class="container">
             {% block body %}{% endblock %}
         </div>
