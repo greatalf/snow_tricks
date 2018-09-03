@@ -1,14 +1,37 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    
+
 <article>
-        <h2>{{ figure.title }}</h2>
-        <div class="metadata">Ecrit le {{ figure.createdAt | date('d/m/Y') }} à {{ figure.createdAt | date('H:i') }}, dans la catégorie {{ figure.category.name }}</div>
-        <div class="content">
-            <img src="{{ figure.image }}" alt="">
-            {{ figure.content | raw }}
-        </div> 
+    <img style="max-height: 500px; width:100%;" src="{{ figure.image }}" alt="">
+    <h2>{{ figure.title }}</h2>
+    <div class="content">
+        {{ figure.content | raw }}
+        <h4 class="text-center">
+          <span title="Date de création" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.createdAt | date('d/m/Y') }} <small> à {{ figure.createdAt | date('H:i') }}</small></span>
+          <span title="Catégorie" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.category.name }}</span>
+          {% if figure.modifiedAt %}
+            <span title="Date de modification" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.modifiedAt | date('d/m/Y') }} <small> à {{ figure.modifiedAt | date('H:i') }}</small></span>
+          {% endif %}
+        </h4>
+    </div>
 </article>
+<hr>
+    <p class="text-center"><input type="text"> &nbsp;&nbsp;<span style="border-radius: 5px; border:1px solid grey; box-shadow: 3px 3px 3px 3px;">&nbsp;Laissez un commentaire!&nbsp;</span></p>
+<hr>
+<section>
+    {% for comment in figure.comments %}
+    <div class="container" style="display:flex;">
+        <div class="row">
+            <div class="col-2" style="display:flex; justify-content: space-around; align-items: center;">
+                <span title="{{ comment.author }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle" style="font-size:36px"></i></span>
+            </div>
+            <div class="col-10" style="border: 1px dashed grey;">
+                {{ comment.content|raw }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
     
 {% endblock %}

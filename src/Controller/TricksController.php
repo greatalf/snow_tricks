@@ -12,6 +12,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\FigureRepository;
 use App\Entity\Figure;
+use App\Entity\Comment;
 use App\Entity\Category;
 use App\Form\FigureType;
 
@@ -46,13 +47,16 @@ class TricksController extends AbstractController
         {
             if(!$figure->getId())
             {
-                $figure->setCreatedAt(new \DateTime());
-                
+                $figure->setCreatedAt(new \DateTime());                
+            }
+            else
+            {
+                $figure->setModifiedAt(new \DateTime());
             }
             $manager->persist($figure);
-                $manager->flush();
+            $manager->flush();
 
-                return $this->redirectToRoute('tricks_show', ['id' => $figure->getId()]);
+            return $this->redirectToRoute('tricks_show', ['id' => $figure->getId()]);
         }
 
         return $this->render('tricks/create.html.twig', [
@@ -63,10 +67,10 @@ class TricksController extends AbstractController
     /**
      * @Route("/tricks/{id}", name="tricks_show")
      */
-    public function show(Figure $figure)
-    {       
-        return $this->render('tricks/show.html.twig', ['figure' => $figure]);
+    public function show(Figure $figure, Comment $comment)
+    {     
+        dump($comment);  
+        return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
     }
-
-
 }
+
