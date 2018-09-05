@@ -66,9 +66,15 @@ class Figure
      */
     private $video;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Visual", mappedBy="figure")
+     */
+    private $visuals;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->visuals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,6 +193,37 @@ class Figure
     public function setVideo(?string $video): self
     {
         $this->video = $video;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Visual[]
+     */
+    public function getVisuals(): Collection
+    {
+        return $this->visuals;
+    }
+
+    public function addVisual(Visual $visual): self
+    {
+        if (!$this->visuals->contains($visual)) {
+            $this->visuals[] = $visual;
+            $visual->setFigure($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVisual(Visual $visual): self
+    {
+        if ($this->visuals->contains($visual)) {
+            $this->visuals->removeElement($visual);
+            // set the owning side to null (unless already changed)
+            if ($visual->getFigure() === $this) {
+                $visual->setFigure(null);
+            }
+        }
 
         return $this;
     }
