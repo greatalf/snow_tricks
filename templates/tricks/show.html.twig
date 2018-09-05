@@ -3,7 +3,9 @@
 {% block body %}
 
 <article>
-    <img style="max-height: 500px; width:100%;" src="{{ figure.image }}" alt="">
+    {% for visual in figure.visuals %}
+    <img style="max-height: 500px; width:100%;" src="{{ figure.viual.title }}" alt="">
+    {% endfor %}
     <h2>{{ figure.title }}</h2>
     <div class="content">
         {{ figure.content | raw }}

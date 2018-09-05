@@ -34,13 +34,6 @@ class Figure
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Url(message="Cette URL n'est pas valide")
-     * @Assert\NotBlank(message="Remplissez le champs")
-     */
-    private $image;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -60,11 +53,6 @@ class Figure
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="figure")
      */
     private $comments;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $video;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Visual", mappedBy="figure")

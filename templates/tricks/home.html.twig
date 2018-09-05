@@ -4,7 +4,7 @@
 
 {% block img %} 
        {# <div> #}
-        <img  class="container-fluid" src="https://www.rei.com/content/dam/images/Expert%20Advice/Migration/HeroImages/Content_Team_082817_18850_Snowboards_Choose_lg.jpg" style="padding: 0px; border: solid 1px red;">
+        <img  class="container-fluid" src="https://www.rei.com/content/dam/images/Expert%20Advice/Migration/HeroImages/Content_Team_082817_18850_Snowboards_Choose_lg.jpg" style="padding: 0px; border: solid 5px rgb(0, 200, 255);">
         {# </div> #}
 {% endblock %}
 
@@ -15,7 +15,7 @@
     {% for figure in figures %}
 
         <div class="card" style="max-width:200px; flex-wrap: wrap;margin: 15px 10px 15px 10px;">
-        <a href="{{ path('tricks_show', {'id': figure.id}) }}">     <img class="card-img-top" src="{{ figure.image }}" alt="Card image" style="width:100%">
+        <a href="{{ path('tricks_show', {'id': figure.id}) }}">     <img class="card-img-top" src="{% for visual in figure.visuals %} {{ visual.title }} {% endfor %}"" alt="Card image" style="width:100%">
         </a>
             <div class="card-body">
                 <a href="{{ path('tricks_show', {'id': figure.id}) }}">
