@@ -7,6 +7,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\Figure;
 use App\Entity\Category;
 use App\Entity\Comment;
+use App\Entity\Visual;
 
 class FigureFixtures extends Fixture
 {
@@ -14,8 +15,8 @@ class FigureFixtures extends Fixture
     {
         $faker = \Faker\Factory::create('fr_FR');
 
-        // 6 fake categories
-        for($i = 1; $i <= 6; $i++)
+        // 4 fake categories
+        for($i = 1; $i <= 4; $i++)
         {
         	$category = new Category();
         	$category->setName($faker->word())
@@ -23,8 +24,8 @@ class FigureFixtures extends Fixture
 
         	$manager->persist($category);
 
-        	// between 16 & 24 fake figures
-        	for($j = 1; $j <= mt_rand(16, 24); $j++)
+        	// between 5 & 8 fake figures
+        	for($j = 1; $j <= mt_rand(5, 8); $j++)
         	{
         		$content = '<p>';
         		$content .= join($faker->paragraphs(3), '</p><p>');
@@ -33,14 +34,13 @@ class FigureFixtures extends Fixture
         		$figure = new Figure();
         		$figure->setTitle($faker->word)
         			   ->setContent($content)
-        			   ->setImage($faker->imageUrl())
         			   ->setCreatedAt($faker->dateTimeBetween('-6 months'))
         			   ->setCategory($category);
         		
         		$manager->persist($figure);
 
-        		//Comment of figure
-        		for($k = 1; $k <= mt_rand(4,10); $k++)
+        		//Comments of figure
+        		for($k = 1; $k <= mt_rand(2,5); $k++)
         		{
         			$content = '<p>' . join($faker->paragraphs(2), '</p><p>') . '</p>';
         			$now = new \DateTime();
@@ -56,6 +56,25 @@ class FigureFixtures extends Fixture
         					->setFigure($figure);
         					
         			$manager->persist($comment);
+				}
+				
+				//Visuals of figure
+        		for($l = 1; $l <= mt_rand(4, 6); $l++)
+        		{
+        			$description = $faker->paragraph();
+        			$now = new \DateTime();
+        			$interval = $now->diff($figure->getCreatedAt());
+        			$days = $interval->days;
+        			$minimum = '-' . $days . ' days';
+
+
+        			$visual = new Visual();
+        			$visual->setTitle($faker->word)
+        					->setDescription($description)
+        					->setAddedAt($faker->dateTimeBetween($minimum))
+        					->setFigure($figure);
+        					
+        			$manager->persist($visual);
         		}
         	}
         }
