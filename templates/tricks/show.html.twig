@@ -3,8 +3,8 @@
 {% block body %}
 
 <article>
-    {% for visual in figure.visuals %}
-    <img style="max-height: 500px; width:100%;" src="{{ figure.viual.title }}" alt="">
+    {% for visual in figure.visuals | slice(0, 1) %}
+    <img style="max-height: 500px; width:100%;" src="{{ visual.url }}" alt="">
     {% endfor %}
     <h2>{{ figure.title }}</h2>
     <div class="content">

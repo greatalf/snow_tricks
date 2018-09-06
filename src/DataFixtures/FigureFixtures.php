@@ -65,12 +65,18 @@ class FigureFixtures extends Fixture
         			$now = new \DateTime();
         			$interval = $now->diff($figure->getCreatedAt());
         			$days = $interval->days;
-        			$minimum = '-' . $days . ' days';
+					$minimum = '-' . $days . ' days';
+					
+					$rand = mt_rand(0, 1);
+					if($rand == 0){$type = 'image';}
+					else{$type = 'video';}
 
 
         			$visual = new Visual();
         			$visual->setTitle($faker->word)
-        					->setDescription($description)
+							->setDescription($description)
+							->setUrl($faker->imageUrl())
+							->setType($type)
         					->setAddedAt($faker->dateTimeBetween($minimum))
         					->setFigure($figure);
         					

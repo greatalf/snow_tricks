@@ -67,9 +67,8 @@ class TricksController extends AbstractController
     /**
      * @Route("/tricks/{id}", name="tricks_show")
      */
-    public function show(Figure $figure, Comment $comment)
+    public function show(Figure $figure = null, Comment $comment = null)
     {     
-        dump($comment);  
         return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
     }
 }

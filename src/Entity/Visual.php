@@ -27,6 +27,11 @@ class Visual
     private $description;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $url;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $addedAt;
@@ -66,6 +71,18 @@ class Visual
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
 
         return $this;
     }
