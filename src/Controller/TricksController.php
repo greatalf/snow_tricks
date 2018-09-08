@@ -30,7 +30,7 @@ class TricksController extends AbstractController
 
     /**
     * @Route("/tricks/new", name="tricks_create")
-    * @Route("/tricks/{id}/edit", name="tricks_edit")
+    * @Route("/tricks/{slug}/edit", name="tricks_edit")
     */
     public function form(Figure $figure = null, Request $request, ObjectManager $manager)
     {
@@ -56,7 +56,7 @@ class TricksController extends AbstractController
             $manager->persist($figure);
             $manager->flush();
 
-            return $this->redirectToRoute('tricks_show', ['id' => $figure->getId()]);
+            return $this->redirectToRoute('tricks_show', ['slug' => $figure->getSlug()]);
         }
 
         return $this->render('tricks/create.html.twig', [
@@ -65,7 +65,7 @@ class TricksController extends AbstractController
     }
 
     /**
-     * @Route("/tricks/{id}", name="tricks_show")
+     * @Route("/tricks/{slug}", name="tricks_show")
      */
     public function show(Figure $figure = null, Comment $comment = null)
     {     

@@ -24,18 +24,26 @@ class FigureFixtures extends Fixture
 
         	$manager->persist($category);
 
-        	// between 5 & 8 fake figures
-        	for($j = 1; $j <= mt_rand(5, 8); $j++)
+        	// between 57 & 8 fake figures
+        	for($j = 1; $j <= mt_rand(6, 8); $j++)
         	{
         		$content = '<p>';
         		$content .= join($faker->paragraphs(3), '</p><p>');
-        		$content .= '</p>';
+				$content .= '</p>';
 
+				$nb = $faker->numberBetween($min = 1, $max = 3);
+				$title = $faker->sentence($nbWords = $nb, $variableNbWords = true);
+				$title = str_replace('.', '', $title);
+				
+				$slug = str_replace(' ', '-', $title);
+				$slug = str_replace('\'', '-', $slug);
+				
         		$figure = new Figure();
-        		$figure->setTitle($faker->word)
+        		$figure->setTitle($title)
         			   ->setContent($content)
         			   ->setCreatedAt($faker->dateTimeBetween('-6 months'))
-        			   ->setCategory($category);
+					   ->setCategory($category)
+					   ->setSlug($slug);
         		
         		$manager->persist($figure);
 
@@ -59,7 +67,7 @@ class FigureFixtures extends Fixture
 				}
 				
 				//Visuals of figure
-        		for($l = 1; $l <= mt_rand(4, 6); $l++)
+        		for($l = 1; $l <= 7; $l++)
         		{
         			$description = $faker->paragraph();
         			$now = new \DateTime();

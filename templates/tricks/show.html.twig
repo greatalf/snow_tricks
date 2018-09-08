@@ -3,10 +3,26 @@
 {% block body %}
 
 <article>
+    <section style="display:flex; flex-direction:row; justify-content:flex-end;">
     {% for visual in figure.visuals | slice(0, 1) %}
-    <img style="max-height: 500px; width:100%;" src="{{ visual.url }}" alt="">
+        <img style="max-height: 500px; width:100%; display:flex;" src="{{ visual.url }}" alt="">
+        <div style="background-color: #000000; display:flex;">
+            <a href="{{ path('tricks_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
+            <a href="#"><i class="fa fa-trash-o" style="font-size:20px"></i></a>
+        </div>
     {% endfor %}
-    <h2>{{ figure.title }}</h2>
+    </section>
+    <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-between; align-items: center;">
+        {% for visual in figure.visuals | slice(1, 10) %}
+            {% if (visual.type == 'image') %}
+            <img style="max-height: 100px; margin:10px 0px 10px 0px;" src="{{ visual.url }}" alt="">
+            {% else %}
+            <iframe style="max-height: 100px; max-width: 133.33px; margin:10px 0px 10px 0px;" src="{{ visual.url }}" alt=""></iframe>
+            {% endif %}
+        {% endfor %}
+    </section>
+
+    <h2>{{ figure.title}}</h2>
     <div class="content">
         {{ figure.content | raw }}
         <h4 class="text-center">
@@ -19,7 +35,7 @@
     </div>
 </article>
 <hr>
-    <p class="text-center"><input type="text"> &nbsp;&nbsp;<span style="border-radius: 5px; border:1px solid grey; box-shadow: 3px 3px 3px 3px;">&nbsp;Laissez un commentaire!&nbsp;</span></p>
+    <p class="text-center"><input type="text"> &nbsp;&nbsp;<button type="button" class="btn btn-primary">Laisser un commentaire</button></p>
 <hr>
 <section>
     {% for comment in figure.comments %}
@@ -28,7 +44,7 @@
             <div class="col-2" style="display:flex; justify-content: space-around; align-items: center;">
                 <span title="{{ comment.author }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle" style="font-size:36px"></i></span>
             </div>
-            <div class="col-10" style="border: 1px dashed grey;">
+            <div class="col-10" style="margin-bottom:10px ; border: 2px dashed #31A5E7">
                 {{ comment.content|raw }}
             </div>
         </div>

@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Snow_Tricks!{% endblock %}</title>
+        <title>{% block title %}Snow Tricks{% endblock %}</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://bootswatch.com/4/cerulean/bootstrap.min.css">
         {% block stylesheets %}
@@ -10,7 +10,7 @@
         {% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="margin-bottom: 50px;">
           <a class="navbar-brand" href="{{ path('home') }}">SNOW_TRICKS</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -33,8 +33,9 @@
                 </ul>   
             </div>
         </nav>
+
         {% block img %}{% endblock %}
-        {# <img class="img-responsive container-fluid" src="https://www.rei.com/content/dam/images/Expert%20Advice/Migration/HeroImages/Content_Team_082817_18850_Snowboards_Choose_lg.jpg" style="padding: 0px; border: solid 1px red;"> #}
+
         <div class="container">
             {% block body %}{% endblock %}
         </div>
@@ -44,4 +45,7 @@
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         {% endblock %}
     </body>
+    <footer style="height:100px">
+
+    </footer>
 </html>
