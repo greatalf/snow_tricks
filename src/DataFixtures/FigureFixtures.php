@@ -92,7 +92,6 @@ class FigureFixtures extends Fixture
         		}
         	}
         }
-
         $manager->flush();
     }
 }

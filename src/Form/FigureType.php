@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Figure;
 use App\Entity\Category;
-use App\Entity\Visual;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -21,9 +20,9 @@ class FigureType extends AbstractType
             ->add('category', EntityType::class,[
                 'class' => Category::class,
                 'choice_label' => 'name', 'label' => 'Catégorie'])
-            ->add('content', null, ['label' => 'Description']);
-            // ->add('visuals', FileType::class, [
-            //     'label' => false]);
+            ->add('content', null, ['label' => 'Description'])
+            ->add('media', VisualType::class)
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

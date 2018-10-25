@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation\Uploadable as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FigureRepository")
@@ -62,7 +63,28 @@ class Figure
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $slug;
+    private $slug;    
+
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @Assert\NotBlank(message="Please, upload the product media as a PDF file.")
+     * @Assert\File(mimeTypes={ "application/jpg" })
+     */
+    private $media;
+
+    public function getMedia()
+    {
+        return $this->media;
+    }
+
+    public function setMedia($media)
+    {
+        $this->media = $media;
+
+        return $this;
+    }
+
 
     public function __construct()
     {
@@ -134,6 +156,18 @@ class Figure
 
         return $this;
     }
+    
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
 
     /**
      * @return Collection|Comment[]
@@ -169,12 +203,12 @@ class Figure
     /**
      * @return Collection|Visual[]
      */
-    public function getVisuals(): Collection
+    public function getVisuals()
     {
         return $this->visuals;
     }
 
-    public function addVisual(Visual $visual): self
+    public function addVisual(Visual $visual)
     {
         if (!$this->visuals->contains($visual)) {
             $this->visuals[] = $visual;
@@ -184,7 +218,7 @@ class Figure
         return $this;
     }
 
-    public function removeVisual(Visual $visual): self
+    public function removeVisual(Visual $visual)
     {
         if ($this->visuals->contains($visual)) {
             $this->visuals->removeElement($visual);
@@ -193,18 +227,6 @@ class Figure
                 $visual->setFigure(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
 
         return $this;
     }
