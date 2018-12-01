@@ -2,12 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Visual;
+use App\Entity\Figure;
+use App\Entity\Comment;
+use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use App\Entity\Figure;
-use App\Entity\Category;
-use App\Entity\Comment;
-use App\Entity\Visual;
 
 class FigureFixtures extends Fixture
 {
@@ -24,7 +24,7 @@ class FigureFixtures extends Fixture
 
         	$manager->persist($category);
 
-        	// between 57 & 8 fake figures
+        	// between 6 & 8 fake figures
         	for($j = 1; $j <= mt_rand(6, 8); $j++)
         	{
         		$content = '<p>';
@@ -45,10 +45,21 @@ class FigureFixtures extends Fixture
 					   ->setCategory($category)
 					   ->setSlug($slug);
         		
-        		$manager->persist($figure);
+				$manager->persist($figure);
 
+				//Visuals of figure
+				for($m = 1; $m <= mt_rand(2,5); $m++)
+				{
+					$visual = new Visual();
+					
+					$visual->setUrl($faker->visualUrl())
+						  ->setCaption($faker->sentence())
+						  ->setFigure($figure);
+
+					$manager->persist($visual);
+				}
         		//Comments of figure
-        		for($k = 1; $k <= mt_rand(2,5); $k++)
+        		for($k = 1; $k <= mt_rand(2,4); $k++)
         		{
         			$content = '<p>' . join($faker->paragraphs(2), '</p><p>') . '</p>';
         			$now = new \DateTime();
@@ -65,31 +76,6 @@ class FigureFixtures extends Fixture
         					
         			$manager->persist($comment);
 				}
-				
-				//Visuals of figure
-        		for($l = 1; $l <= 7; $l++)
-        		{
-        			$description = $faker->paragraph();
-        			$now = new \DateTime();
-        			$interval = $now->diff($figure->getCreatedAt());
-        			$days = $interval->days;
-					$minimum = '-' . $days . ' days';
-					
-					$rand = mt_rand(0, 1);
-					if($rand == 0){$type = 'image';}
-					else{$type = 'video';}
-
-
-        			$visual = new Visual();
-        			$visual->setTitle($faker->word)
-							->setDescription($description)
-							->setUrl($faker->imageUrl())
-							->setType($type)
-        					->setAddedAt($faker->dateTimeBetween($minimum))
-        					->setFigure($figure);
-        					
-        			$manager->persist($visual);
-        		}
         	}
         }
         $manager->flush();

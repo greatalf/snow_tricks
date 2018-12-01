@@ -5,11 +5,13 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation\Uploadable as Vich;
+use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FigureRepository")
+ * @Vich\Uploadable
  */
 class Figure
 {
@@ -22,15 +24,15 @@ class Figure
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min=3, max=255, minMessage="Le titre rentré est trop court : 3 caractères minimum")
-     * @Assert\NotBlank(message="Remplissez le champs")
+     * @Assert\Length(min=3, max=30)
+     * @Assert\NotBlank()
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\Length(min=3, minMessage="Le contenu rentré est trop court : 2 caractères minimum")
-     * @Assert\NotBlank(message="Remplissez le champs")
+     * @Assert\Length(min=3, max=500)
+     * @Assert\NotBlank()
      */
     private $content;
 
@@ -45,6 +47,12 @@ class Figure
     private $modifiedAt;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Url()
+     */
+    private $headVisual;   
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="figures")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -56,35 +64,15 @@ class Figure
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Visual", mappedBy="figure")
-     */
-    private $visuals;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
-    private $slug;    
+    private $slug;
 
     /**
-     * @ORM\Column(type="string")
-     *
-     * @Assert\NotBlank(message="Please, upload the product media as a PDF file.")
-     * @Assert\File(mimeTypes={ "application/jpg" })
+     * @ORM\OneToMany(targetEntity="App\Entity\Visual", mappedBy="figure", orphanRemoval=true)
+     * @Assert\Valid()
      */
-    private $media;
-
-    public function getMedia()
-    {
-        return $this->media;
-    }
-
-    public function setMedia($media)
-    {
-        $this->media = $media;
-
-        return $this;
-    }
-
+    private $visuals;
 
     public function __construct()
     {
@@ -203,12 +191,12 @@ class Figure
     /**
      * @return Collection|Visual[]
      */
-    public function getVisuals()
+    public function getVisuals(): Collection
     {
         return $this->visuals;
     }
 
-    public function addVisual(Visual $visual)
+    public function addVisual(Visual $visual): self
     {
         if (!$this->visuals->contains($visual)) {
             $this->visuals[] = $visual;
@@ -218,7 +206,7 @@ class Figure
         return $this;
     }
 
-    public function removeVisual(Visual $visual)
+    public function removeVisual(Visual $visual): self
     {
         if ($this->visuals->contains($visual)) {
             $this->visuals->removeElement($visual);
@@ -227,6 +215,26 @@ class Figure
                 $visual->setFigure(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of headVisual
+     */ 
+    public function getHeadVisual()
+    {
+        return $this->headVisual;
+    }
+
+    /**
+     * Set the value of headVisual
+     *
+     * @return  self
+     */ 
+    public function setHeadVisual($headVisual)
+    {
+        $this->headVisual = $headVisual;
 
         return $this;
     }

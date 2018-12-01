@@ -3,13 +3,19 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VisualRepository")
  */
 class Visual
 {
+    const VISUALKIND = [
+        0 => 'Image',
+        1 => 'Vidéo'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -18,78 +24,31 @@ class Visual
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $title;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $description;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Url()
      */
     private $url;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=5, max=50)
      */
-    private $addedAt;
+    private $caption;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Figure", inversedBy="visuals")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $figure;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="integer")
      */
-    private $type;
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    private $file;
-
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-  public function setFile(UploadedFile $file = null)
-    {
-        $this->file = $file;
-    }
-//////////////////////////////////////////////////////////////////////////////////
-
+    private $visualKind = 0;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
     }
 
     public function getUrl(): ?string
@@ -104,14 +63,14 @@ class Visual
         return $this;
     }
 
-    public function getAddedAt(): ?\DateTimeInterface
+    public function getCaption(): ?string
     {
-        return $this->addedAt;
+        return $this->caption;
     }
 
-    public function setAddedAt(\DateTimeInterface $addedAt): self
+    public function setCaption(string $caption): self
     {
-        $this->addedAt = $addedAt;
+        $this->caption = $caption;
 
         return $this;
     }
@@ -128,50 +87,20 @@ class Visual
         return $this;
     }
 
-    public function getType(): ?string
+    public function getVisualKind(): ?int
     {
-        return $this->type;
+        return $this->visualKind;
     }
 
-    public function setType(?string $type): self
+    public function setVisualKind(int $visualKind): self
     {
-        $this->type = $type;
+        $this->visualKind = $visualKind;
 
         return $this;
     }
 
-
-///////////////////////////////////////////////////////////////////////////////
-    public function upload()
+    public function getVisualKindType(): string
     {
-        // Si jamais il n'y a pas de fichier (champ facultatif), on ne fait rien
-        if (null === $this->file)
-        {
-            return;
-        }
-
-        // On récupère le nom original du fichier de l'internaute
-        $name = $this->file->getClientOriginalName();
-
-        // On déplace le fichier envoyé dans le répertoire de notre choix
-        $this->file->move($this->getUploadRootDir(), $name);
-
-        // On sauvegarde le nom de fichier dans notre attribut $url
-        $this->url = $name;
-
-        // On crée également le futur attribut alt de notre balise <img>
-        // $this->alt = $name;
-    }
-
-    public function getUploadDir()
-    {
-        // On retourne le chemin relatif vers l'image pour un navigateur (relatif au répertoire /web donc)
-        return 'uploads/img';
-    }
-
-    protected function getUploadRootDir()
-    {
-        // On retourne le chemin relatif vers l'image pour notre code PHP
-        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+        return self::HEAT[$this->visualKind];
     }
 }

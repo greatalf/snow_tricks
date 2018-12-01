@@ -5,26 +5,24 @@
 <article>
     <section style="display:flex; flex-direction:row; justify-content:flex-end;">
     {% for visual in figure.visuals | slice(0, 1) %}
-        <img style="max-height: 500px; width:100%; display:flex;" src="{{ visual.url }}" alt="">
-        <div style="background-color: #000000; display:flex;">
-            <a href="{{ path('tricks_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
-            <a href="#"><i class="fa fa-trash-o" style="font-size:20px"></i></a>
-        </div>
+        <img style="max-height: 700px; width:100%;" src="{{ figure.headVisual }}"">
     {% endfor %}
     </section>
-    <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-between; align-items: center;">
-        {% for visual in figure.visuals | slice(1, 10) %}
-            {% if (visual.type == 'image') %}
-            <img style="max-height: 100px; margin:10px 0px 10px 0px;" src="{{ visual.url }}" alt="">
+    <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-around; align-items: center;">
+        {% for visual in figure.visuals | slice(0, 10) %}
+            {% if visual.visualKind == '1' %}
+                <iframe width="178" height="100" src="{{ visual.url }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             {% else %}
-            <iframe style="max-height: 100px; max-width: 133.33px; margin:10px 0px 10px 0px;" src="{{ visual.url }}" alt=""></iframe>
+            <a href="{{ visual.url }}">
+                <img style="max-height: 100px; margin:10px 0px 10px 0px;" src="{{ visual.url }}" alt="">
+            </a>
             {% endif %}
         {% endfor %}
     </section>
 
     <h2>{{ figure.title}}</h2>
     <div class="content">
-        {{ figure.content | raw }}
+        {{ figure.content|raw }}
         <h4 class="text-center">
           <span title="Date de création" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.createdAt | date('d/m/Y') }} <small> à {{ figure.createdAt | date('H:i') }}</small></span>
           <span title="Catégorie" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.category.name }}</span>
