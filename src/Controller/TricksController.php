@@ -83,12 +83,10 @@ class TricksController extends AbstractController
     }
 
     /**
-    * @Route("/tricks/{slug}/edit", name="tricks_edit")
+    * @Route("/tricks/{slug}/edit", name="tricks_edit", methods="GET|POST")
     */
     public function edit(Figure $figure, Request $request, ObjectManager $manager)
     {
-        // $visualKind->array_flip(Visual::VISUALKIND); 
-
         $form = $this->createForm(FigureType::class, $figure);
         $form->handleRequest($request);
 
@@ -185,9 +183,6 @@ class TricksController extends AbstractController
             {
                 $embedUrl = 'https://www.youtube.com/embed/' . $videoID;
             }
-            // dump($visual->getVisualKind());
-            // dump($visual->setUrl($embedUrl));
-            // die;
             return $visual->setUrl($embedUrl);
         }
         else
@@ -230,15 +225,29 @@ class TricksController extends AbstractController
     }
 
     /**
+     * @Route("/tricks/{slug}/delete", name="tricks_delete")
+     */    
+    public function delete(Figure $figure, ObjectManager $manager)
+    {     
+        $manager->remove($figure);
+        $manager->flush();
+        // return new Response('Suppression');
+
+        $this->addFlash(
+                    'success',
+                    'La figure a bien été supprimée'
+                    );
+
+        return $this->redirectToRoute('home', ['figure' => $figure]);
+    }
+
+    /**
      * @Route("/tricks/{slug}", name="tricks_show")
      */
-    public function show(Figure $figure, Comment $comment = null)
+    public function show(Figure $figure, Comment $comment)
     {     
         return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
     }
 
-    // créer un private type dans entity visual, ce type peut être null, 
-    // dans le controller, si match alors $visual->setType = 'vidéo', sinon $visual->setType = 'photo'
-    // dans show.html.twig, boucler sur les visuals, si {{ visual.type }} est une vidéo, afficher {{ visual.url }} 
-    // tel quel, sinon afficher {{ visual.url }} dans une balise <img>.
+    
 }

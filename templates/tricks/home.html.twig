@@ -10,6 +10,14 @@
 
 {% block body %} 
 
+    {% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="alert alert-{{ label }}">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
     <div style="display: flex; flex-wrap: wrap;">
 
     {% for figure in figures %}
@@ -29,7 +37,7 @@
                         <a href="{{ path('tricks_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
                     </div>
                     <div class="col-1" style:"padding:0px;">
-                        <a href="#"><i class="fa fa-trash-o" style="font-size:20px"></i></a>
+                        <a onclick="return confirm('Êtes vous sur de vouloir supprimer la figure?'" href="{{ path('tricks_delete', {'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px"></i></a>
                     </div>
                 </div>                
             </div>
