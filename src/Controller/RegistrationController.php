@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
 use App\Form\UserType;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\User;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
@@ -14,7 +14,7 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/inscription", name="user_registration")
      */
-    public function registration(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function registration(Request $request, User $user, UserPasswordEncoderInterface $passwordEncoder)
     {
 		// 1) build the form
         $user = new User();
@@ -22,7 +22,8 @@ class RegistrationController extends AbstractController
 
         // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if($form->isSubmitted() && $form->isValid())
+        {
 
             // 3) Encode the password (you could also do this via Doctrine listener)
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
