@@ -7,11 +7,17 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FigureRepository")
  * @Vich\Uploadable
+ * @UniqueEntity(
+ *  fields= {"title"},
+ *  message="La figure existe déjà"
+ *  )
+ * 
  */
 class Figure
 {

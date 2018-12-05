@@ -3,21 +3,32 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(
+ *  fields= {"email"},
+ *  message="Cette adresse email est déjà utilisé"
+ *  )
+ * @UniqueEntity(
+ *  fields= {"username"},
+ *  message="Ce pseudo est déjà utilisé"
+ *  )
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer") 
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Email()
      */
     private $email;
 
@@ -28,8 +39,14 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="8")
      */
     private $password;
+    
+    /**
+     * @Assert\EqualTo(propertyPath="password", message="Les mots de passe doivent être identiques")
+     */
+    public $confirm_password;
 
     public function getId(): ?int
     {
@@ -71,4 +88,20 @@ class User
 
         return $this;
     }
+
+    public function getSalt()
+    {
+
+    }
+
+    public function eraseCredentials()
+    {
+
+    }
+
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
+    }
 }
+
