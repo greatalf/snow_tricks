@@ -14,4 +14,16 @@
 
     <h1>Page de connection !</h1>
 
+    <form action="{{ path('security_connexion') }}" method="post">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="exemple@mail.com" required name="_username">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="Mot de passe" required name="_password">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Se connecter</button>
+        </div>
+    </form>
+
 {% endblock %}
