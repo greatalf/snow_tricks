@@ -4,9 +4,9 @@
 
 <article>
     <section style="display:flex; flex-direction:row; justify-content:flex-end;">
-    {% for visual in figure.visuals | slice(0, 1) %}
+
         <img style="max-height: 700px; width:100%;" src="{{ figure.headVisual }}">
-    {% endfor %}
+
     </section>
     <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-around; align-items: center;">
         {% for visual in figure.visuals | slice(0, 10) %}

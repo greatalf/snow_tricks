@@ -29,7 +29,7 @@ class Category
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Figure", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Figure", mappedBy="category", cascade="remove", orphanRemoval=true))
      */
     private $figures;
 

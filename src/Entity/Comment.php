@@ -38,6 +38,7 @@ class Comment
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Figure", inversedBy="comments")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $figure;
 

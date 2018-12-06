@@ -41,6 +41,9 @@ class TricksController extends AbstractController
         {
             foreach($figure->getVisuals() as $visual)
             {
+                //traiter et efface tout ce qu'il y a après l'extension d'une image
+                //ex : https://twistedsifter.files.wordpress.com/2011/01/perfect-tail-grab.jpg?w=799&h=533
+                //https://cdn.shopify.com/s/files/1/0230/2239/files/Canadian_Bacon_Tim_Eddy_side_Fenelon_large.jpg?1819627745986436554
                 $this->videoUrlConvertissor($visual);
 
                 if((!$this->isImage($visual) && (!$this->isVideo($visual))))
@@ -49,7 +52,7 @@ class TricksController extends AbstractController
                     'danger',
                     'Une des URLs remplies n\'est ni une image(jpeg, jpg, png, aspx), ni une vidéo Youtube ou Dailymotion'
                     );
-                    return $this->redirectToRoute('tricks_edit', [
+                    return $this->redirectToRoute('tricks_create', [
                         'slug' => $figure->getSlug()
                         ]);
                 }
@@ -64,14 +67,14 @@ class TricksController extends AbstractController
                 'danger',
                 "L'URL de l'image d'affiche n'est pas une image valide(jpeg, jpg, png)"
             );
-            return $this->redirectToRoute('tricks_new', [
+            return $this->redirectToRoute('tricks_create', [
                 'slug' => $figure->getSlug()
                 ]);
             }            
             $figure->setHeadVisual($figure->getHeadVisual());
 
             $dateCreate = (new \Datetime());
-            $slug  = str_replace(' ', '-', (str_replace(' \'','-',$figure->getTitle())));
+            $slug  = str_replace(' ', '-', (str_replace('\'','-',$figure->getTitle())));
 
             $figure->setSlug($slug);
             $figure->setCreatedAt($dateCreate);
@@ -119,6 +122,7 @@ class TricksController extends AbstractController
                 }
                 $visual->setFigure($figure);
                 $manager->persist($visual);
+                
             }
 
             if(!$this->isHeadVisualValid($figure))
@@ -130,16 +134,18 @@ class TricksController extends AbstractController
             return $this->redirectToRoute('tricks_edit', [
                 'slug' => $figure->getSlug()
                 ]);
-            }            
+            }   
             $figure->setHeadVisual($figure->getHeadVisual());
-
+            
             $dateModified = (new \Datetime());
             $slug = str_replace('\'', '-', (str_replace(' ','-',$figure->getTitle())));
-
+            
             $figure->setSlug($slug);
             $figure->setModifiedAt($dateModified);
 
-            $manager->persist($figure);
+            // $manager->persist($figure);
+            // $manager->merge($figure);
+
             $manager->flush();
 
             $this->addFlash(
@@ -169,12 +175,13 @@ class TricksController extends AbstractController
             $visual->setVisualKind('0');
             return true;
         }
+        return false;
     }
 
     private function convertVideoUrl(Visual $visual, $regexPattern, $youtubeORdailymotion)
     {
         //comparaison de l'url fournie à une url vidéo
-        preg_match('#(' . $regexPattern . ')([a-z0-9_]+)#mi', $visual->getUrl(), $matches);
+        preg_match('#(' . $regexPattern . ')([a-z0-9_-]+)#mi', $visual->getUrl(), $matches);
 
         //si c'est une vidéo
         if($matches !== [])
