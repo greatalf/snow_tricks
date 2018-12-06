@@ -30,7 +30,7 @@ class TricksController extends AbstractController
     /**
     * @Route("/tricks/new", name="tricks_create")
     */
-    public function form(Figure $figure = null, Request $request, ObjectManager $manager)
+    public function create(Figure $figure = null, Request $request, ObjectManager $manager)
     {        
         $figure = new Figure();        
         
@@ -74,7 +74,7 @@ class TricksController extends AbstractController
             $figure->setHeadVisual($figure->getHeadVisual());
 
             $dateCreate = (new \Datetime());
-            $slug  = str_replace(' ', '-', (str_replace('\'','-',$figure->getTitle())));
+            $slug = $this->slugify($figure->getTitle());
 
             $figure->setSlug($slug);
             $figure->setCreatedAt($dateCreate);
@@ -138,7 +138,7 @@ class TricksController extends AbstractController
             $figure->setHeadVisual($figure->getHeadVisual());
             
             $dateModified = (new \Datetime());
-            $slug = str_replace('\'', '-', (str_replace(' ','-',$figure->getTitle())));
+            $slug = $this->slugify($figure->getTitle());
             
             $figure->setSlug($slug);
             $figure->setModifiedAt($dateModified);
@@ -163,6 +163,37 @@ class TricksController extends AbstractController
             'figure' => $figure
             ]);
     }
+
+    /**
+     * @Route("/tricks/{slug}/delete", name="tricks_delete")
+     */    
+    public function delete(Figure $figure, ObjectManager $manager)
+    {     
+        $manager->remove($figure);
+        $manager->flush();
+        // return new Response('Suppression');
+
+        $this->addFlash(
+                    'success',
+                    'La figure a bien été supprimée'
+                    );
+
+        return $this->redirectToRoute('home', ['figure' => $figure]);
+    }
+
+    /**
+     * @Route("/tricks/{slug}", name="tricks_show")
+     */
+    public function show(Figure $figure, Comment $comment = null)
+    {     
+            return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
+    }
+
+
+
+
+
+
 
     private function isImage(Visual $visual)
     {
@@ -227,8 +258,6 @@ class TricksController extends AbstractController
         }
     }
 
-
-
     private function isHeadVisualValid(Figure $figure)
     {
         $extTable = ['jpg', 'jpeg', 'png', 'aspx'];
@@ -240,30 +269,9 @@ class TricksController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/tricks/{slug}/delete", name="tricks_delete")
-     */    
-    public function delete(Figure $figure, ObjectManager $manager)
-    {     
-        $manager->remove($figure);
-        $manager->flush();
-        // return new Response('Suppression');
-
-        $this->addFlash(
-                    'success',
-                    'La figure a bien été supprimée'
-                    );
-
-        return $this->redirectToRoute('home', ['figure' => $figure]);
+    public function slugify($string)
+    {
+        return lcfirst(str_replace('\'', '-', (str_replace(' ','-',$string))));
     }
-
-    /**
-     * @Route("/tricks/{slug}", name="tricks_show")
-     */
-    public function show(Figure $figure, Comment $comment = null)
-    {     
-            return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
-    }
-
     
 }
