@@ -50,5 +50,16 @@ class SecurityController extends AbstractController
         return $this->render('security/connexion.html.twig');
     }
 
+    /**
+     * @Route("/deconnexion", name="security_deconnexion")
+     */ 
+    public function deconnexion()
+    {
+        $this->addFlash(
+                'success',
+                'Vous avez bien été déconnecté'
+        );
+    }
+
 
 }

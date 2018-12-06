@@ -20,6 +20,10 @@ security:
             form_login:
                 login_path: security_connexion
                 check_path: security_connexion
+            logout:
+                path: security_deconnexion
+                target: home
+
 
 
             # activate different ways to authenticate
