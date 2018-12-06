@@ -81,12 +81,12 @@ class TricksController extends AbstractController
 
             $manager->persist($figure);
             $manager->flush();
-
+            
             $this->addFlash(
                 'success',
                 'La figure ' . $figure->getTitle() . ' a bien été ajoutée!'
             );
-
+            
             return $this->redirectToRoute('tricks_show', [
                 'slug' => $figure->getSlug()
             ]);
@@ -94,10 +94,22 @@ class TricksController extends AbstractController
         return $this->render('tricks/create.html.twig', [
             'form' => $form->createView()
             ]);
-    }
+        }
+        
+        
+        
+        
+        
+        
+        //créer la route pour aller au form qui update qu'un seul visual prérempli par son id envoyé à la vue
+        
+        
+        
 
-    /**
-    * @Route("/tricks/{slug}/edit", name="tricks_edit", methods="GET|POST")
+        
+
+        /**
+    * @Route("/tricks/{slug}/edit", name="tricks_edit")
     */
     public function edit(Figure $figure, Request $request, ObjectManager $manager)
     {
@@ -109,17 +121,17 @@ class TricksController extends AbstractController
             foreach($figure->getVisuals() as $visual)
             {                
                 $this->videoUrlConvertissor($visual);
-
+                
                 if((!$this->isImage($visual) && (!$this->isVideo($visual))))
                 {
                     $this->addFlash(
                     'danger',
                     'Une des URLs remplies n\'est ni une image(jpeg, jpg, png, aspx), ni une vidéo Youtube ou Dailymotion'
-                    );
+                );
                     return $this->redirectToRoute('tricks_edit', [
                         'slug' => $figure->getSlug()
                         ]);
-                }
+                    }
                 $visual->setFigure($figure);
                 $manager->persist($visual);
                 
@@ -142,12 +154,12 @@ class TricksController extends AbstractController
             
             $figure->setSlug($slug);
             $figure->setModifiedAt($dateModified);
-
+            
             // $manager->persist($figure);
             // $manager->merge($figure);
 
             $manager->flush();
-
+            
             $this->addFlash(
                 'success',
                 'La figure ' . $figure->getTitle() . ' a bien été modifiée!'
@@ -157,13 +169,15 @@ class TricksController extends AbstractController
                 'slug' => $figure->getSlug()
             ]);
         }
-
+        
         return $this->render('tricks/edit.html.twig', [
             'form'   => $form->createView(),
             'figure' => $figure
             ]);
     }
 
+    //créer la route pour aller au form qui supprime qu'un seul visual séléctionné par son id 
+    
     /**
      * @Route("/tricks/{slug}/delete", name="tricks_delete")
      */    
