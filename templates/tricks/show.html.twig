@@ -5,7 +5,7 @@
 <article>
     <section style="display:flex; flex-direction:row; justify-content:flex-end;">
     {% for visual in figure.visuals | slice(0, 1) %}
-        <img style="max-height: 700px; width:100%;" src="{{ figure.headVisual }}"">
+        <img style="max-height: 700px; width:100%;" src="{{ figure.headVisual }}">
     {% endfor %}
     </section>
     <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-around; align-items: center;">
@@ -36,6 +36,7 @@
     <p class="text-center"><input type="text"> &nbsp;&nbsp;<button type="button" class="btn btn-primary">Laisser un commentaire</button></p>
 <hr>
 <section>
+{# {% if comment %} #}
     {% for comment in figure.comments %}
     <div class="container" style="display:flex;">
         <div class="row">
@@ -48,6 +49,7 @@
         </div>
     </div>
     {% endfor %}
+{# {% endif %} #}
 </section>
     
 {% endblock %}

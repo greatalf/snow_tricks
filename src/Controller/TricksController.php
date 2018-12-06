@@ -43,6 +43,17 @@ class TricksController extends AbstractController
             {
                 $this->videoUrlConvertissor($visual);
 
+                if((!$this->isImage($visual) && (!$this->isVideo($visual))))
+                {
+                    $this->addFlash(
+                    'danger',
+                    'Une des URLs remplies n\'est ni une image(jpeg, jpg, png, aspx), ni une vidéo Youtube ou Dailymotion'
+                    );
+                    return $this->redirectToRoute('tricks_edit', [
+                        'slug' => $figure->getSlug()
+                        ]);
+                }
+
                 $visual->setFigure($figure);
                 $manager->persist($visual);
             }
@@ -185,10 +196,8 @@ class TricksController extends AbstractController
             }
             return $visual->setUrl($embedUrl);
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     private function videoUrlConvertissor(Visual $visual)
@@ -244,9 +253,9 @@ class TricksController extends AbstractController
     /**
      * @Route("/tricks/{slug}", name="tricks_show")
      */
-    public function show(Figure $figure, Comment $comment)
+    public function show(Figure $figure, Comment $comment = null)
     {     
-        return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
+            return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
     }
 
     
