@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+<h1>Image à la une de la figure {{ figure.title }}</h1>
+
+
+	{{ form_start(formEditHeadVisual) }}
+	
+	{{ form_row(formEditHeadVisual.headVisual) }}
+    
+    {{ form_row(formEditHeadVisual._token) }}
+
+	<input type="submit" class="btn btn-success" value="Modifier">
+
+    {% endblock %}

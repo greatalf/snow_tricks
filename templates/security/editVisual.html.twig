@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+<h1>Modifier ce média de la figure {{ figure.title }}</h1>
+
+	{{ form_start(formEditVisual) }}	
+
+	<div class="row">
+		<div class="col-2">
+			{{ form_row(formEditVisual.visualKind) }}
+		</div>
+		<div class="col-10">
+			<div class="row">
+				<div class="col-7">
+					{{ form_row(formEditVisual.url) }}
+				</div>
+				<div class="col-3">	
+					{{ form_row(formEditVisual.caption) }}			
+				</div>
+				
+			</div>				
+		</div>
+		{{ form_row(formEditVisual._token) }}
+	</div>
+
+<br>
+
+	<input type="submit" class="btn btn-success" value="Modifier">
+
+
+    {% endblock %}

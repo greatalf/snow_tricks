@@ -2,8 +2,6 @@
 
 {% block body %}
 
-	
-
 	<h1>Création d'une catégorie</h1>
 
 	{{ form_start(form) }}
@@ -11,7 +9,5 @@
 	{{ form_row(form.description, {'label': 'Description', 'attr': { 'placeholder': "Description sommaire de la catégorie"}}) }}
 	<button type="submit" class="btn btn-success">Enregistrer</button>
 	{{ form_end(form) }}
-	
-
 
 {% endblock %}
