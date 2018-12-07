@@ -6,21 +6,6 @@
 
 {% block body %}
 
-
-
-
-{# //unicité de la figure !! #}
-
-
-
-
-
-
-
-
-
-
-
 	{% for label, messages in app.flashes %}
 		{% for message in messages %}
 			<div class="alert alert-{{ label }}">
@@ -39,21 +24,23 @@
 	{{ form_row(form.content) }}
 	{{ form_row(form.category) }}
 
-	<input type="submit" class="btn btn-success" value="Enregistrer">
 	
 	{{ form_end(form) }}
 
 {% endblock %}
 
 {% block _figure_visuals_widget %}
-	<p>Ici, ajoutez vos visuals</p>
+	<p>Ici, ajoutez vos médias (<u>URL image (jpeg, jpg, png, ou URL vidéo Youtube | Dailymotion</u>)</p>
 
 	{{ form_widget(form) }}
 
 	<input type="hidden" id="widgets-counter" value="0">
 
 	<div class="form-group">
-		<button type="button" id="add-visual" class="btn btn-info">Ajouter une visual</button>
+		<button type="button" id="add-visual" class="btn btn-info">Ajouter un media</button>
+		<br>
+		<br>
+		<input type="submit" class="btn btn-success" value="Enregistrer">
 	</div>
 
 {% endblock %}
@@ -86,6 +73,7 @@
 			</div>
 		</div>
 	</div>
+
 {% endblock %}
 
 {% block javascripts %}
