@@ -17,6 +17,8 @@
 	<h1>
 		Modification de la figure : {{ figure.title }}
 	</h1>
+	<br>
+	<hr>
 	
 	{{ form_start(form) }}
 	
@@ -24,8 +26,6 @@
 	{{ form_row(form.content) }}
 	{{ form_row(form.category) }}
 
-	<input type="submit" class="btn btn-success" value="Modifier">
-	
 	{{ form_end(form) }}
 
 {% endblock %}
@@ -39,6 +39,9 @@
 
 	<div class="form-group">
 		<button type="button" id="add-visual" class="btn btn-info">Ajouter un media</button>
+		<br>
+		<br>
+		<input type="submit" class="btn btn-success" value="Modifier">
 	</div>
 
 {% endblock %}

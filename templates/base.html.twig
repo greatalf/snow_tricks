@@ -44,10 +44,6 @@
                 </div>
             </nav>            
 
-        {# {% block img %}{% endblock %} #}
-
-        <div class="container">    
-
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div class="alert alert-{{ label }}">
@@ -55,6 +51,11 @@
                     </div>
                 {% endfor %}
             {% endfor %}
+            
+        {% block img %}{% endblock %}
+
+
+        <div class="container">    
 
             {% block body %}{% endblock %}
 
