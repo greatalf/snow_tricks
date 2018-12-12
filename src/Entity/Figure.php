@@ -62,12 +62,7 @@ class Figure
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="figures")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $category;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="figure", orphanRemoval=true)
-     */
-    private $comments;
+    private $category;   
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -79,6 +74,17 @@ class Figure
      * @Assert\Valid()
      */
     private $visuals;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="figure", orphanRemoval=true)
+     */
+    private $comments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="figures")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
 
     public function __construct()
     {
@@ -161,7 +167,7 @@ class Figure
         $this->slug = $slug;
 
         return $this;
-    }
+    }    
 
     /**
      * @return Collection|Comment[]
@@ -170,17 +176,14 @@ class Figure
     {
         return $this->comments;
     }
-
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
             $comment->setFigure($this);
         }
-
         return $this;
     }
-
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->contains($comment)) {
@@ -190,7 +193,6 @@ class Figure
                 $comment->setFigure(null);
             }
         }
-
         return $this;
     }
 
@@ -241,6 +243,18 @@ class Figure
     public function setHeadVisual($headVisual)
     {
         $this->headVisual = $headVisual;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

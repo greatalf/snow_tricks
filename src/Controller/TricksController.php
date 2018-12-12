@@ -2,14 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Visual;
 use App\Entity\Figure;
 use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Form\VisualType;
 use App\Form\EditHeadVisualType;
 use App\Form\EditVisualType;
-use App\Entity\Category;
 use App\Form\FigureType;
+use App\Entity\Category;
 use App\Repository\FigureRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -18,8 +20,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TricksController extends AbstractController
 { 
-    const HeadVisualDefault = 'https://printablefreecoloring.com/image/transportation/drawing-snowboard-2.png';
-
     /**
      *@Route("/", name="home")
      */
@@ -75,11 +75,14 @@ class TricksController extends AbstractController
                 ]);
             }            
             $figure->setHeadVisual($figure->getHeadVisual());
+            $figure->setAuthor($this->getUser());
+
 
             $dateCreate = (new \Datetime());
             $slug = $this->slugify($figure->getTitle());
 
             $figure->setSlug($slug);
+            $figure->setContent(nl2br($figure->getContent()));
             $figure->setCreatedAt($dateCreate);
 
             $manager->persist($figure);
@@ -99,13 +102,122 @@ class TricksController extends AbstractController
             ]);
         }
         
-        
-        
-        
-        
-        
-        //il faut savoir cibler d'id du visual que je veux modifier
-        //créer la route pour aller au form qui update qu'un seul visual prérempli par son id envoyé à la vue
+        /**
+        * @Route("/tricks/{slug}/edit", name="tricks_edit")
+        */
+        public function edit(Figure $figure, Request $request, ObjectManager $manager)
+        {
+            $form = $this->createForm(FigureType::class, $figure);
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid())
+            {
+                foreach($figure->getVisuals() as $visual)
+                {                
+                    $this->videoUrlConvertissor($visual);
+                    
+                    if((!$this->isImage($visual) && (!$this->isVideo($visual))))
+                    {
+                        $this->addFlash(
+                        'danger',
+                        'Une des URLs remplies n\'est ni une image(jpeg, jpg, png, aspx), ni une vidéo Youtube ou Dailymotion'
+                    );
+                        return $this->redirectToRoute('tricks_edit', [
+                            'slug' => $figure->getSlug()
+                            ]);
+                        }
+                    $visual->setFigure($figure);
+                    $manager->persist($visual);
+                    
+                }
+
+                if(!$this->isHeadVisualValid($figure))
+                {
+                $this->addFlash(
+                    'danger',
+                    "L'URL de l'image d'affiche n'est pas une image valide(jpeg, jpg, png, aspx)"
+                );
+                return $this->redirectToRoute('tricks_edit', [
+                    'slug' => $figure->getSlug()
+                    ]);
+                }   
+
+                $figure->setHeadVisual($figure->getHeadVisual());
+                
+                $dateModified = (new \Datetime());
+                $figure->setContent(nl2br($figure->getContent()));
+                $slug = $this->slugify($figure->getTitle());
+                
+                $figure->setSlug($slug);
+                $figure->setModifiedAt($dateModified);
+                
+                $manager->flush();
+                
+                $this->addFlash(
+                    'success',
+                    'La figure ' . $figure->getTitle() . ' a bien été modifiée!'
+                );
+
+                return $this->redirectToRoute('tricks_show', [
+                    'slug' => $figure->getSlug()
+                ]);
+            }
+            
+            return $this->render('tricks/edit.html.twig', [
+                'form'   => $form->createView(),
+                'figure' => $figure
+                ]);
+        }
+
+        /**
+         * @Route("/tricks/{slug}/delete", name="tricks_delete")
+         */    
+        public function delete(Figure $figure, ObjectManager $manager)
+        {     
+            // die('La figure <u>' . $figure->getTitle() .'</u> est SUPPRIMEE pour de faux!');
+            $manager->remove($figure);
+            $manager->flush();
+
+            $this->addFlash(
+                        'success',
+                        'La figure a bien été supprimée'
+                        );
+
+            return $this->redirectToRoute('home', ['figure' => $figure]);
+        }
+
+        /**
+         * @Route("/tricks/{slug}", name="tricks_show")
+         */
+        public function show(Figure $figure = null, ObjectManager $manager, Request $request)
+        {     
+            $comment = new Comment();
+            $form = $this->createForm(CommentType::class, $comment);
+
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid())
+            {            
+                if($this->getUser() == null)
+                {
+                    return $this->redirectToRoute('security_connexion');
+                }
+
+                $comment->setCreatedAt(new \Datetime())
+                        ->setFigure($figure)
+                        ->setAuthor($this->getUser());
+
+                $manager->persist($comment);
+                $manager->flush();
+
+                return $this->redirectToRoute('tricks_show', ['slug' => $figure->getSlug()]);
+            }
+
+            return $this->render('tricks/show.html.twig', [
+                'figure' => $figure,
+                'CommentForm' => $form->createView()
+            ]);
+        }
         
         /**
         * @Route("/tricks/{slug}/editHeadVisual", name="head_visual_edit")
@@ -116,7 +228,7 @@ class TricksController extends AbstractController
             $formEditHeadVisual->handleRequest($request);
             
             if($formEditHeadVisual->isSubmitted() && $formEditHeadVisual->isValid())
-            {
+            {                
                 if(!$this->isHeadVisualValid($figure))
                 {
                     $this->addFlash(
@@ -130,8 +242,7 @@ class TricksController extends AbstractController
                 }   
 
                 $figure->setHeadVisual($figure->getHeadVisual());
-
-            
+               
                 $dateModified = (new \Datetime());
                 $figure->setModifiedAt($dateModified);
 
@@ -182,10 +293,11 @@ class TricksController extends AbstractController
         {
             $formEditVisual = $this->createForm(VisualType::class, $visual);
             $formEditVisual->handleRequest($request);
+
+            $figure = $repo->findOneById($visual->getFigure());
             
             if($formEditVisual->isSubmitted() && $formEditVisual->isValid())
             {
-                $figure = $repo->findOneById($visual->getFigure());
                 $this->videoUrlConvertissor($visual);
                 
                 if((!$this->isImage($visual) && (!$this->isVideo($visual))))
@@ -218,8 +330,9 @@ class TricksController extends AbstractController
             }
 
             return $this->render('security/editVisual.html.twig', [
-            'formEditVisual'   => $formEditVisual->createView(),
-            'visual' => $visual
+                'formEditVisual'   => $formEditVisual->createView(),
+                'visual' => $visual,
+                'figure' => $figure
                 ]);
         }
 
@@ -255,99 +368,7 @@ class TricksController extends AbstractController
             return $this->redirectToRoute('tricks_show', [
                     'slug' => $figure->getSlug()
                     ]);
-        }
-
-    /**
-    * @Route("/tricks/{slug}/edit", name="tricks_edit")
-    */
-    public function edit(Figure $figure, Request $request, ObjectManager $manager)
-    {
-        $form = $this->createForm(FigureType::class, $figure);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid())
-        {
-            foreach($figure->getVisuals() as $visual)
-            {                
-                $this->videoUrlConvertissor($visual);
-                
-                if((!$this->isImage($visual) && (!$this->isVideo($visual))))
-                {
-                    $this->addFlash(
-                    'danger',
-                    'Une des URLs remplies n\'est ni une image(jpeg, jpg, png, aspx), ni une vidéo Youtube ou Dailymotion'
-                );
-                    return $this->redirectToRoute('tricks_edit', [
-                        'slug' => $figure->getSlug()
-                        ]);
-                    }
-                $visual->setFigure($figure);
-                $manager->persist($visual);
-                
-            }
-
-            if(!$this->isHeadVisualValid($figure))
-            {
-            $this->addFlash(
-                'danger',
-                "L'URL de l'image d'affiche n'est pas une image valide(jpeg, jpg, png, aspx)"
-            );
-            return $this->redirectToRoute('tricks_edit', [
-                'slug' => $figure->getSlug()
-                ]);
-            }   
-
-            $figure->setHeadVisual($figure->getHeadVisual());
-            
-            $dateModified = (new \Datetime());
-            $slug = $this->slugify($figure->getTitle());
-            
-            $figure->setSlug($slug);
-            $figure->setModifiedAt($dateModified);
-            
-            $manager->flush();
-            
-            $this->addFlash(
-                'success',
-                'La figure ' . $figure->getTitle() . ' a bien été modifiée!'
-            );
-
-            return $this->redirectToRoute('tricks_show', [
-                'slug' => $figure->getSlug()
-            ]);
-        }
-        
-        return $this->render('tricks/edit.html.twig', [
-            'form'   => $form->createView(),
-            'figure' => $figure
-            ]);
-    }
-
-    //créer la route pour aller au form qui supprime qu'un seul visual séléctionné par son id 
-    
-    /**
-     * @Route("/tricks/{slug}/delete", name="tricks_delete")
-     */    
-    public function delete(Figure $figure, ObjectManager $manager)
-    {     
-        $manager->remove($figure);
-        $manager->flush();
-
-        $this->addFlash(
-                    'success',
-                    'La figure a bien été supprimée'
-                    );
-
-        return $this->redirectToRoute('home', ['figure' => $figure]);
-    }
-
-    /**
-     * @Route("/tricks/{slug}", name="tricks_show")
-     */
-    public function show(Figure $figure, Comment $comment = null)
-    {     
-            return $this->render('tricks/show.html.twig', ['figure' => $figure, 'comments' => $comment]);
-    }
+        }    
 
     private function isImage(Visual $visual)
     {

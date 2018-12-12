@@ -26,6 +26,7 @@ class SecurityController extends AbstractController
         {            
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
+            $user->setSlug(lcfirst(str_replace('\'', '-', (str_replace(' ','-', $user->getUsername())))));
 
             $manager->persist($user);
             $manager->flush();
