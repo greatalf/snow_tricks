@@ -2,10 +2,12 @@
 
 {% block title %}Salut!{% endblock %}
 
+
 {% block img %} 
-       {# <div> #}
-        <img  class="container-fluid" src="https://www.rei.com/content/dam/images/Expert%20Advice/Migration/HeroImages/Content_Team_082817_18850_Snowboards_Choose_lg.jpg" style="padding: 0px;">
-        {# </div> #}
+    <div style="position: relative; display: inline-block;">
+            <img class="container-fluid"  style="padding: 0px" src="https://www.rei.com/content/dam/images/Expert%20Advice/Migration/HeroImages/Content_Team_082817_18850_Snowboards_Choose_lg.jpg">
+            <p style="position: absolute; width: 100%; top: 30%; text-align: center; font-size: 60px; color: #007BFF; text-shadow: 2px 2px 1px #000000">Sur SnowTricks, partage tes tricks !!</p>
+    </div>
 {% endblock %}
 
 {% block body %} 
@@ -33,12 +35,16 @@
                             <h4 style="margin:0px; font-size:14px;" class="card-title">{{ figure.title }}</h4>
                         </a>
                     </div>
+
+                    {% if app.user %}
                     <div class="col-1" style:"padding:0px;">
                         <a href="{{ path('tricks_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
                     </div>
                     <div class="col-1" style:"padding:0px;">
                         <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('tricks_delete', {'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px"></i></a>
                     </div>
+                    {% endif %}
+
                 </div>                
             </div>
         </div>

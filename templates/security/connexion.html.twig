@@ -12,20 +12,32 @@
 		{% endfor %}
 	{% endfor %}
 
-    <h1>Page de connection !</h1>
+    <h1 class="text-center mt-3">Connection</h1>
     <br>
-	<hr>
+	
     
-    <form action="{{ path('security_connexion') }}" method="post">
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="exemple@mail.com" required name="_username">
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control" placeholder="Mot de passe" required name="_password">
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success">Se connecter</button>
-        </div>
-    </form>
+    {% if hasError %}
+        <div class="alert alert-danger">Le mot de passe et l'adresse email ne correspondent pas!</div>
+    {% endif %}
+    
+    <div class="text-center" style="margin: auto; max-width: 350px; border:5px solid #007BFF; padding: 30px; border-radius:10px;">
+        <form action="{{ path('security_connexion') }}" method="post">
+            <div style="width:250px; margin: auto">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="exemple@mail.com" required name="_username" value="{{ username }}">
+                </div>
+            </div>
+            <div style="width:250px; margin: auto">
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Mot de passe" required name="_password">
+                </div>
+            </div>
+            <div style="width:250px; margin: auto">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Se connecter</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
 {% endblock %}

@@ -4,8 +4,24 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'fr'
     uploads_directory: '%kernel.project_dir%/public/uploads/images'
+
+    # database_driver :    pdo_mysql 
+    # database_host :      127.0.0.1 
+    # database_port :      ~ 
+    # bdd :      tricks 
+    # database_user :      root 
+    # database_password :  ~
+
+    # mailer_transport: smtp
+    # mailer_encryption: tls
+    # mailer_host: smtp.mailtrap.io
+    # mailer_port: 2525
+    # mailer_user: 1d9855814d9f1b
+    # mailer_password: 5002b7bd66c758
+    # mailer_auth_mode: login
+    # secret: ASecretKeyForMail
+
 
 services:
     # default configuration for services in *this* file

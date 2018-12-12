@@ -8,67 +8,41 @@
 .containeur {
   position: relative;
   width: 100%;
-}
-
-.image {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.overlay {
   display: flex;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 1;
-}
-
-.icon-bin {
-  position: absolute;
-  top: 3%;
-  left: 96%;
-}
-
-.icon-pencil {
-  position: absolute;
-  top: 3%;
-  left: 92%;
-}
+  flex-direction: row;
+  justify-content: flex-end;
+  }
 
 </style>
 
 
 
 <article>
-    <section class="row containeur" style="display:flex; flex-direction:row; justify-content:flex-end;">
+    <section class="row containeur">
         <div class="col-12" style=" padding:0px 0px 0px 0px; justify-content:flex-start;">
-                <div class="image img-responsive" style="height: 600px; width:100%; background-image: url('{{ figure.headVisual }}'); background-repeat: no-repeat; background-size: cover;"></div>
-                {# <img style="max-height: 700px; width:100%; margin-bottom:10px;" src="{{ figure.headVisual }}"> #}
-            <div class="row overlay" style="display: flex; justify-content:flex-end;">
-                {# <div class="col-6 offset-6"  style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px;"> #}
-                    <div class="col-1 icon-pencil" style:"padding:0px;">
-                        <a href="{{ path('head_visual_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px; box-shadow: 1px 1px 5px black;"></i></a>
-                    </div>
 
-                    <div class="col-1 icon-bin" style:"padding:0px;">
-                        <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('head_visual_delete', {'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px; box-shadow: 1px 1px 5px black;"></i></a>
-                    </div>
-                {# </div> #}
-            </div>
+        <div class="mt-3" style="position: relative; display: inline-block; width: 100%;">
+            <img class="container-fluid img-responsive" style="max-height: 600px; width:100%;" src="{{ figure.headVisual }}">
+            <p style="position: absolute; width: 100%; top: 30%; text-align: center; font-size: 60px; color: #007BFF; text-shadow: 2px 2px 1px #000000">{{ figure.title }}</p>
+
+            {% if app.user %}
+                <div style="border: 3px solid #007BFF; border-radius: 5px; position: absolute; width: 12%; height: 30px; top: 5%; left: 80%; font-size: 20px; color: #007BFF; box-shadow: 2px 2px 1px #000000">
+                    <p><a href="{{ path('head_visual_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="position: absolute; width: 20%; top: 9%; left: 20%; font-size: 20px; color: #009BFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
+                    <p><a href="{{ path('head_visual_delete', {'slug': figure.slug}) }}"><i class="fa fa-trash-o" style="position: absolute; width: 20%; top: 9%; left: 65%; font-size: 20px; color: #007BFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
+                </div>            
+            {% endif %}
+
         </div>
     </section>
 
     <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-around; align-items: center; line-height:5px; margin-top: 15px;">
         {% for visual in figure.visuals | slice(0, 10) %}
         <div>
+
             {% if visual.visualKind == '1' %}
                 <iframe style="margin-top:5px;" width="160" height="100" src="{{ visual.url }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 
+                {% if app.user %}
                 <div class="col-6 offset-6" style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px; margin-top:5px;">
                     <div class="col-1" style:"padding:0px;">
                         <a href="{{ path('visual_edit', {'id': visual.id, 'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
@@ -77,11 +51,14 @@
                         <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('visual_delete', {'id': visual.id, 'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px"></i></a>
                     </div>
                 </div>
+                {% endif %}
+
             {% else %}
                 <a href="{{ visual.url }}">
                     <img style="width: 160px; height: 100px; margin:0px 0px 10px 0px;" src="{{ visual.url }}" alt="">
                 </a>
-
+                
+                {% if app.user %}
                 <div class="col-6 offset-6"  style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px;">
                     <div class="col-1" style:"padding:0px;">
                         <a href="{{ path('visual_edit', {'id': visual.id, 'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
@@ -90,7 +67,9 @@
                         <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('visual_delete', {'id': visual.id, 'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px"></i></a>
                     </div>
                 </div>
+                {% endif %}
             {% endif %}
+
         </div>
         {% endfor %}
     </section>
@@ -109,33 +88,40 @@
 
 </article>
 <hr>
-    <div class="row text-center">
-        <div class="col-6" style="height-line:5px">
-            {{ form_start(CommentForm) }}
-            {{ form_widget(CommentForm.content, {'attr': {
-                'placeholder' : 'Votre commentaire'
-            }}) }}
-            {{ form_row(CommentForm._token) }}
+    {% if app.user %}
+        <div class="row text-center">
+            <div class="col-6 offset-2" style="height-line:5px">
+                {{ form_start(CommentForm) }}
+                {{ form_widget(CommentForm.content, {'attr': {
+                    'placeholder' : 'Votre commentaire'
+                }}) }}
+                {{ form_row(CommentForm._token) }}
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary">Laisser un commentaire</button>
+            </div>
         </div>
-        
-        <div class="col-6">
-            <button type="submit" class="btn btn-primary">Laisser un commentaire</button>
-        </div>
-    </div>
+    {% else %}
+        <p>Vous devez être connecté pour commenter.</p>
+        <a href="{{ path('security_connexion') }}"><button class="btn btn-primary"><strong style="color:#FFFFFF;">Me connecter</strong></button></a>
+    {% endif %}
 <hr>
+
+
 <section>
     {% if figure.comments|length == 0 %}
         <h3>Pas encore de commentaire</h3>
     {% else %}
-        {{ figure.comments|length }} Commentaire(s)
+        <h3>{{ figure.comments|length }} Commentaire(s)</h3>
     {% endif %}
+    <br>
     {% for comment in figure.comments %}
-    <div class="container" style="display:flex;">
+    <div class="container">
         <div class="row">
-            <div class="col-2" style="display:flex; justify-content: space-around; align-items: center;">
+            <div class="col-2 mb-4" style="display:flex; justify-content: space-around; align-items: center;">
                 <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle" style="font-size:36px"></i></span>
             </div>
-            <div class="col-10" style="margin-bottom:10px ; border: 2px dashed #31A5E7">
+            <div class="col-10 mb-4" style="min-height: 50px; padding:20px; border: 2px dashed #31A5E7">
                 {{ comment.content|raw }}
             </div>
         </div>
