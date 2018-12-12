@@ -8,60 +8,28 @@
 .containeur {
   position: relative;
   width: 100%;
-}
-
-.image {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.overlay {
   display: flex;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 1;
-}
-
-.icon-bin {
-  position: absolute;
-  top: 3%;
-  left: 96%;
-}
-
-.icon-pencil {
-  position: absolute;
-  top: 3%;
-  left: 92%;
-}
+  flex-direction: row;
+  justify-content: flex-end;
+  }
 
 </style>
 
 
 
 <article>
-    <section class="row containeur" style="display:flex; flex-direction:row; justify-content:flex-end;">
+    <section class="row containeur">
         <div class="col-12" style=" padding:0px 0px 0px 0px; justify-content:flex-start;">
-                <div class="image img-responsive" style="height: 600px; width:100%; background-image: url('{{ figure.headVisual }}'); background-repeat: no-repeat; background-size: cover;"></div>
-                {# <img style="max-height: 700px; width:100%; margin-bottom:10px;" src="{{ figure.headVisual }}"> #}
-            
-            {% if app.user %}
-            <div class="row overlay" style="display: flex; justify-content:flex-end;">
-                {# <div class="col-6 offset-6"  style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px;"> #}
-                    <div class="col-1 icon-pencil" style:"padding:0px;">
-                        <a href="{{ path('head_visual_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px; box-shadow: 1px 1px 5px black;"></i></a>
-                    </div>
 
-                    <div class="col-1 icon-bin" style:"padding:0px;">
-                        <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('head_visual_delete', {'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px; box-shadow: 1px 1px 5px black;"></i></a>
-                    </div>
-                {# </div> #}
-            </div>
+        <div class="mt-3" style="position: relative; display: inline-block; width: 100%;">
+            <img class="container-fluid img-responsive" style="max-height: 600px; width:100%;" src="{{ figure.headVisual }}">
+            <p style="position: absolute; width: 100%; top: 30%; text-align: center; font-size: 60px; color: #007BFF; text-shadow: 2px 2px 1px #000000">{{ figure.title }}</p>
+
+            {% if app.user %}
+                <div style="border: 3px solid #007BFF; border-radius: 5px; position: absolute; width: 12%; height: 30px; top: 5%; left: 80%; font-size: 20px; color: #007BFF; box-shadow: 2px 2px 1px #000000">
+                    <p><a href="{{ path('head_visual_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="position: absolute; width: 20%; top: 9%; left: 20%; font-size: 20px; color: #009BFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
+                    <p><a href="{{ path('head_visual_delete', {'slug': figure.slug}) }}"><i class="fa fa-trash-o" style="position: absolute; width: 20%; top: 9%; left: 65%; font-size: 20px; color: #007BFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
+                </div>            
             {% endif %}
 
         </div>

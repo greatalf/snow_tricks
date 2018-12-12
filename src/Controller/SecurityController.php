@@ -16,7 +16,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/registration", name="security_registration")
      */
-    public function registration(Request $request, Objectmanager $manager, UserPasswordEncoderInterface $encoder)
+    public function registration(Request $request, Objectmanager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
     {
         $user = new User;
         $form = $this->createForm(RegistrationType::class, $user);
@@ -29,14 +29,32 @@ class SecurityController extends AbstractController
             $user->setPassword($hash);
             $user->setSlug(lcfirst(str_replace('\'', '-', (str_replace(' ','-', $user->getUsername())))));
 
-            $manager->persist($user);
-            $manager->flush();
+
+
+            
+            $message = (new \Swift_Message('Hello Email'))
+            ->setFrom('avril.laurent974@yahoo.fr')
+            ->setTo('mayava976@gmail.com')
+            ->setBody('test du BODY!!');
+            // $this->renderView(
+            //     'HelloBundle:Hello:email.txt.twig',
+            //     array('name' => $name)
+            //         )
+            //     )
+            // ;
+            $mailer->send($message);
+
+
+
+
+            // $manager->persist($user);
+            // $manager->flush();
 
             $this->addFlash(
                 'success',
                 'Un email de confirmation vous a été envoyé à l\'adresse ' .  $user->getEmail()
             );
-            return $this->redirectToRoute('security_connexion');
+            // return $this->redirectToRoute('home');
         }
 
         return $this->render('security/registration.html.twig', [
