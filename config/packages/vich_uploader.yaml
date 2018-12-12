@@ -1,7 +1,0 @@
-vich_uploader:
-    db_driver: orm
-
-    mappings:
-       tricks_image:
-           uri_prefix: /images/tricks
-           upload_destination: '%kernel.project_dir%/public/images/tricks'

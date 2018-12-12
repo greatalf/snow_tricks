@@ -7,8 +7,9 @@ use App\Form\RegistrationType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends AbstractController
 {
@@ -46,9 +47,15 @@ class SecurityController extends AbstractController
     /**
      * @Route("/connexion", name="security_connexion")
      */ 
-    public function connexion()
+    public function connexion(AuthenticationUtils $utils)
     {
-        return $this->render('security/connexion.html.twig');
+        $error = $utils->getLastAuthenticationError();
+        $username = $utils->getLastUsername();
+
+        return $this->render('security/connexion.html.twig', [
+            'hasError' => $error !== null,
+            'username' => $username,
+        ]);
     }
 
     /**
