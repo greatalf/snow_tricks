@@ -29,32 +29,14 @@ class SecurityController extends AbstractController
             $user->setPassword($hash);
             $user->setSlug(lcfirst(str_replace('\'', '-', (str_replace(' ','-', $user->getUsername())))));
 
-
-
-            
-            $message = (new \Swift_Message('Hello Email'))
-            ->setFrom('avril.laurent974@yahoo.fr')
-            ->setTo('mayava976@gmail.com')
-            ->setBody('test du BODY!!');
-            // $this->renderView(
-            //     'HelloBundle:Hello:email.txt.twig',
-            //     array('name' => $name)
-            //         )
-            //     )
-            // ;
-            $mailer->send($message);
-
-
-
-
-            // $manager->persist($user);
-            // $manager->flush();
+            $manager->persist($user);
+            $manager->flush();
 
             $this->addFlash(
                 'success',
                 'Un email de confirmation vous a été envoyé à l\'adresse ' .  $user->getEmail()
             );
-            // return $this->redirectToRoute('home');
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('security/registration.html.twig', [
