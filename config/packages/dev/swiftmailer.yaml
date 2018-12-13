@@ -10,4 +10,4 @@ swiftmailer:
   # port: 2525
 
     # send all emails to a specific address
-  delivery_addresses: ['mayava976@gmail.com']
+  # delivery_addresses: ['mayava976@gmail.com']
