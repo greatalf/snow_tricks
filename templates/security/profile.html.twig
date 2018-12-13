@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<h1 class="text-center mt-3">Editer mon profil</h1>
+	<br>
+
+<div class="text-center" style="margin: auto; max-width: 350px; border:5px solid #007BFF; padding: 30px; border-radius:10px;">
+
+	{{ form_start(form) }}
+
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.username, {'attr': {'value': user.username }}) }}
+	</div>
+
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.email, {'attr': {'value': user.email }}) }}
+	</div>
+    
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.firstName, {'attr': {'value': user.lastName }}) }}
+	</div>
+    
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.lastName, {'attr': {'value': user.lastName }}) }}
+	</div>
+    
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.description, {'attr': {'value': user.description }}) }}
+	</div>
+    
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.avatar, {'attr': {'value': user.avatar }}) }}
+	</div>
+
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.password) }}
+	</div>
+
+	<div style="width:250px; margin: auto">
+	{{ form_row(form.confirm_password) }}
+	</div>
+
+	<button type="submit" class="btn btn-primary">Créer un compte</button>
+	{{ form_row(form._token) }}
+	
+</div>
+
+{% endblock %}

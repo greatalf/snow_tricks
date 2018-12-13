@@ -1,5 +1,5 @@
 Title: Titre
-Description: Description
+Description: test
 Category: Catégorie
 Head visual: Image d'affiche
 Visuals: Medias
@@ -8,3 +8,10 @@ Url: Url du média
 Caption: Légende
 Author: Auteur
 Content: Contenu
+Email: Email
+First name: Nom
+Last name: Prénom
+File: Fichier
+Avatar: Avatar
+Password: Mot de passe
+Confirm Password: Confirmer mot de passe

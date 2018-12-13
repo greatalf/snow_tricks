@@ -45,6 +45,38 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * @Route("/admin/profil", name="security_profil")
+     */
+    public function profil(Request $request, Objectmanager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
+    {
+        $user = $this->getUser();
+        $form = $this->createForm(RegistrationType::class, $user);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {            
+            $hash = $encoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($hash);
+            $user->setSlug(lcfirst(str_replace('\'', '-', (str_replace(' ','-', $user->getUsername())))));
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre profil a bien été mis à jour'
+            );
+            return $this->redirectToRoute('admin');
+        }
+
+        return $this->render('security/profile.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * @Route("/connexion", name="security_connexion")
      */ 
     public function connexion(AuthenticationUtils $utils)
