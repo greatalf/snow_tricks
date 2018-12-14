@@ -55,7 +55,17 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
-        {            
+        {       
+            $user = $form->getData();
+
+            $avatar = $user->getAvatar();
+
+            $file = $user->getAvatar()->getFile();
+
+            $name = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move('../public/avatars', $name);
+            $avatar->setName($name);
+
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
             $user->setSlug(lcfirst(str_replace('\'', '-', (str_replace(' ','-', $user->getUsername())))));
@@ -73,6 +83,16 @@ class SecurityController extends AbstractController
         return $this->render('security/profile.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
+        ]);
+    }
+
+    /**
+     * @Route("/admin", name="security_admin")
+     */
+    public function admin()
+    {
+        return $this->render('security/admin.html.twig', [
+            'user' => $this->getUser()
         ]);
     }
 

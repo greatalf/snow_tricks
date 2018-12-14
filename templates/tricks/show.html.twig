@@ -119,7 +119,11 @@
     <div class="container">
         <div class="row">
             <div class="col-2 mb-4" style="display:flex; justify-content: space-around; align-items: center;">
-                <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle" style="font-size:36px"></i></span>
+                {% if comment.author.avatar.name is defined %}
+                <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><img style="width:50px; border-radius: 50%;" src="../avatars/{{ comment.author.avatar.name }}"></span>
+                {% else %}
+                <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle" style="width:50px; font-size:48px"></i></span>
+                {% endif %}
             </div>
             <div class="col-10 mb-4" style="min-height: 50px; padding:20px; border: 2px dashed #31A5E7">
                 {{ comment.content|raw }}
