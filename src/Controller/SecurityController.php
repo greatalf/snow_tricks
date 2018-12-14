@@ -45,7 +45,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/admin/profil", name="security_profil")
+     * @Route("/admin/profil/edit", name="security_edit_profil")
      */
     public function profil(Request $request, Objectmanager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
     {
@@ -55,7 +55,17 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
-        {            
+        {       
+            $user = $form->getData();
+
+            $avatar = $user->getAvatar();
+
+            $file = $user->getAvatar()->getFile();
+
+            $name = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move('../public/avatars', $name);
+            $avatar->setName($name);
+
             $hash = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
             $user->setSlug(lcfirst(str_replace('\'', '-', (str_replace(' ','-', $user->getUsername())))));
@@ -67,12 +77,22 @@ class SecurityController extends AbstractController
                 'success',
                 'Votre profil a bien été mis à jour'
             );
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('security_admin');
         }
 
-        return $this->render('security/profile.html.twig', [
+        return $this->render('security/editProfile.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
+        ]);
+    }
+
+    /**
+     * @Route("/user", name="security_user")
+     */
+    public function admin()
+    {
+        return $this->render('security/user.html.twig', [
+            'user' => $this->getUser()
         ]);
     }
 

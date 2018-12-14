@@ -5,6 +5,7 @@
         <title>{% block title %}Snow Tricks{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
         {% block stylesheets %}
         {% endblock %}
     </head>
@@ -40,7 +41,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ path('security_profil') }}" class="nav-link">
+                        <a href="{{ path('security_user') }}" class="nav-link">
                         Mon compte
                         </a>
                     </li>

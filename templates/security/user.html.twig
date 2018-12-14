@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<h1 class="text-center mt-3">Ma page perso</h1>
+    <br>
+    <hr>
+	<br>
+<a href="{{ path('security_edit_profil') }}">Editer mon profil</a>
+<section class="container">
+    <div class="row align-items-center">
+        <div class="col-3 text-center">
+            <img class="avatar-md" src="../avatars/{{user.avatar.name}}" alt="Avatar de {{user.fullName}}">
+            <br>
+            <span class="badge badge-primary">{{user.figures | length}} figures</span>
+        </div> 
+        <div class="col-9">
+            <h1>{{user.fullName}}</h1>
+        </div>
+    </div>
+
+    {{user.description|raw}}
+
+    <hr>
+
+    <h2>Les figures de {{user.fullName}}</h2>
+
+    {% if user.figures|length > 0 %}
+    <div class="row">
+        {% for figure in user.figures %}
+            {% include 'tricks/_figure.html.twig' %}
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="alert alert-warning">
+            <p><strong>{{user.fullName}}</strong> n'a pas encore publié de figure</p>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

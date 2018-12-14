@@ -1,0 +1,24 @@
+<div class="card" style="max-width:200px; flex-wrap: wrap; margin: 15px 10px 15px 10px;">
+    <a href="{{ path('tricks_show', {'slug': figure.slug}) }}">
+        <img class="card-img-top" src="{{ figure.headVisual }}" alt="Card image" style="width:198px; height:148px;">
+    </a>
+    <div class="card-body" style="height:40px; display:flex; flex-wrap: nowrap; justify-content:space-between; align-items:center;">
+        <div class="row" style="line-height:20px; min-width:180px;">
+            <div class="col-8" style:"padding:0px; display:inline;">
+                <a href="{{ path('tricks_show', {'slug': figure.slug}) }}">
+                    <h4 style="margin:0px; font-size:14px;" class="card-title">{{ figure.title }}</h4>
+                </a>
+            </div>
+
+            {% if app.user %}
+            <div class="col-1" style:"padding:0px;">
+                <a href="{{ path('tricks_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
+            </div>
+            <div class="col-1" style:"padding:0px;">
+                <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('tricks_delete', {'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px"></i></a>
+            </div>
+            {% endif %}
+
+        </div>                
+    </div>
+</div>

@@ -84,11 +84,17 @@ class User implements UserInterface
      * @ORM\OneToOne(targetEntity="App\Entity\Avatar", mappedBy="user", cascade={"persist", "remove"})
      */
     private $avatar;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="users")
+     */
+    private $userRoles;
     
     public function __construct()
     {
         $this->figures = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->userRoles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -273,6 +279,39 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getUserRoles(): Collection
+    {
+        return $this->userRoles;
+    }
+
+    public function addUserRole(Role $userRole): self
+    {
+        if (!$this->userRoles->contains($userRole)) {
+            $this->userRoles[] = $userRole;
+            $userRole->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserRole(Role $userRole): self
+    {
+        if ($this->userRoles->contains($userRole)) {
+            $this->userRoles->removeElement($userRole);
+            $userRole->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    public function fullName()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 }
 
