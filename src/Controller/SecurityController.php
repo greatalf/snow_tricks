@@ -45,7 +45,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/admin/profil", name="security_profil")
+     * @Route("/admin/profil/edit", name="security_edit_profil")
      */
     public function profil(Request $request, Objectmanager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
     {
@@ -77,21 +77,21 @@ class SecurityController extends AbstractController
                 'success',
                 'Votre profil a bien été mis à jour'
             );
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('security_admin');
         }
 
-        return $this->render('security/profile.html.twig', [
+        return $this->render('security/editProfile.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
         ]);
     }
 
     /**
-     * @Route("/admin", name="security_admin")
+     * @Route("/user", name="security_user")
      */
     public function admin()
     {
-        return $this->render('security/admin.html.twig', [
+        return $this->render('security/user.html.twig', [
             'user' => $this->getUser()
         ]);
     }

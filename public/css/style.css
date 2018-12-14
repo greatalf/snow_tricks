@@ -1,0 +1,16 @@
+
+.avatar-md{
+    width: 100px;
+    border-radius: 50%;
+}
+.avatar-mini{
+    width: 40px;
+    border-radius: 50%;
+}
+.avatar-micro{
+    width: 20px;
+    border-radius: 50%;
+}
+footer{
+    height: 200px;
+}
