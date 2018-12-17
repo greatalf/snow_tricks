@@ -21,7 +21,7 @@ class RegistrationType extends AbstractType
             ->add('description')
             ->add('firstName')
             ->add('lastName')
-            ->add('avatar', AvatarType::class, ['label' => false])
+            ->add('avatar', AvatarType::class, ['label' => false, 'required' => false])
         ;
     }
 

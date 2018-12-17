@@ -27,7 +27,7 @@
 	</div>
     
 	<div style="width:250px; margin: auto">
-	{{ form_row(form.firstName, {'attr': {'value': user.lastName }}) }}
+	{{ form_row(form.firstName, {'attr': {'value': user.firstName }}) }}
 	</div>
     
 	<div style="width:250px; margin: auto">
@@ -39,16 +39,16 @@
 	</div>
     
 	<div style="width:250px; margin: auto">
-	{{ form_row(form.avatar) }}
+	{{ form_row(form.avatar, {'attr': {'value': user.avatar.name, novalidate: 'novalidate' }}) }}
+	</div>
+
+	{# <div style="width:250px; margin: auto">
+	{{ form_row(form.password, {'attr': {'value': user.password, novalidate: 'novalidate' }}) }}
 	</div>
 
 	<div style="width:250px; margin: auto">
-	{{ form_row(form.password) }}
-	</div>
-
-	<div style="width:250px; margin: auto">
-	{{ form_row(form.confirm_password) }}
-	</div>
+	{{ form_row(form.confirm_password, {'attr': {'value': user.password, novalidate: 'novalidate' }}) }}
+	</div> #}
 
 	<button type="submit" class="btn btn-primary">Modifier mon compte</button>
 	{{ form_row(form._token) }}

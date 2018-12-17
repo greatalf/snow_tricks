@@ -263,20 +263,20 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getAvatar(): ?Avatar
+    public function getAvatar()
     {
         return $this->avatar;
     }
 
-    public function setAvatar(?Avatar $avatar): self
+    public function setAvatar($avatar)
     {
         $this->avatar = $avatar;
 
         // set (or unset) the owning side of the relation if necessary
-        $newUser = $avatar === null ? null : $this;
-        if ($newUser !== $avatar->getUser()) {
-            $avatar->setUser($newUser);
-        }
+        // $newUser = $avatar === null ? null : $this;
+        // if ($newUser !== $avatar->getUser()) {
+        //     $avatar->setUser($newUser);
+        // }
 
         return $this;
     }

@@ -6,19 +6,27 @@
     <br>
     <hr>
 	<br>
-<a href="{{ path('security_edit_profil') }}">Editer mon profil</a>
 <section class="container">
     <div class="row align-items-center">
         <div class="col-3 text-center">
-            <img class="avatar-md" src="../avatars/{{user.avatar.name}}" alt="Avatar de {{user.fullName}}">
+
+	{% if user.avatar.name is defined %}
+		<img class="avatar-md mb-3" src="../../avatars/{{user.avatar.name}}" alt="Avatar de {{ (user.fullName) ? (user.fullName) : (user.username) }}">
+            {# <img class="avatar-md" src="../avatars/{{user.avatar.name}}" alt="Avatar de {{user.fullName}}"> #}
+	{% else %}
+		<img class="avatar-md mb-3" src="../../avatars/avatar-default.png" alt="Avatar de {{ user.username }}">
+	{% endif %}
+
+
             <br>
-            <span class="badge badge-primary">{{user.figures | length}} figures</span>
+            <span class="badge badge-primary">{{user.figures | length}} figure(s)</span>
         </div> 
         <div class="col-9">
             <h1>{{user.fullName}}</h1>
+            <a href="{{ path('security_edit_profil') }}">Editer mon profil</a>
         </div>
     </div>
-
+    <br>
     {{user.description|raw}}
 
     <hr>
