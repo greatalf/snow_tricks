@@ -58,12 +58,12 @@ class Avatar
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser()
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser($user)
     {
         $this->user = $user;
 
