@@ -12,14 +12,13 @@
 
 	{% if user.avatar.name is defined %}
 		<img class="avatar-md mb-3" src="../../avatars/{{user.avatar.name}}" alt="Avatar de {{ (user.fullName) ? (user.fullName) : (user.username) }}">
-            {# <img class="avatar-md" src="../avatars/{{user.avatar.name}}" alt="Avatar de {{user.fullName}}"> #}
 	{% else %}
 		<img class="avatar-md mb-3" src="../../avatars/avatar-default.png" alt="Avatar de {{ user.username }}">
 	{% endif %}
 
 
             <br>
-            <span class="badge badge-primary">{{user.figures | length}} figure(s)</span>
+            <span class="badge badge-primary">{{user.figures|length}} figure(s)</span>
         </div> 
         <div class="col-9">
             <h1>{{user.fullName}}</h1>
@@ -31,7 +30,7 @@
 
     <hr>
 
-    <h2>Les figures de {{user.fullName}}</h2>
+    <h2>Vos figures</h2>
 
     {% if user.figures|length > 0 %}
     <div class="row">

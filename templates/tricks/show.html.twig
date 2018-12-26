@@ -3,8 +3,6 @@
 {% block body %}
 
 <style>
-
-
 .containeur {
   position: relative;
   width: 100%;
@@ -12,7 +10,6 @@
   flex-direction: row;
   justify-content: flex-end;
   }
-
 </style>
 
 
@@ -39,36 +36,7 @@
         {% for visual in figure.visuals | slice(0, 10) %}
         <div>
 
-            {% if visual.visualKind == '1' %}
-                <iframe style="margin-top:5px;" width="160" height="100" src="{{ visual.url }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                
-                {% if app.user %}
-                <div class="col-6 offset-6" style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px; margin-top:5px;">
-                    <div class="col-1" style:"padding:0px;">
-                        <a href="{{ path('visual_edit', {'id': visual.id, 'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
-                    </div>
-                    <div class="col-1" style:"padding:0px;">
-                        <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('visual_delete', {'id': visual.id, 'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px"></i></a>
-                    </div>
-                </div>
-                {% endif %}
-
-            {% else %}
-                <a href="{{ visual.url }}">
-                    <img style="width: 160px; height: 100px; margin:0px 0px 10px 0px;" src="{{ visual.url }}" alt="">
-                </a>
-                
-                {% if app.user %}
-                <div class="col-6 offset-6"  style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px;">
-                    <div class="col-1" style:"padding:0px;">
-                        <a href="{{ path('visual_edit', {'id': visual.id, 'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
-                    </div>
-                    <div class="col-1" style:"padding:0px;">
-                        <a onclick="return confirm('Etes-vous sur de vouloir supprimer ?');" href="{{ path('visual_delete', {'id': visual.id, 'slug': figure.slug}) }}")><i class="fa fa-trash-o" style="font-size:20px"></i></a>
-                    </div>
-                </div>
-                {% endif %}
-            {% endif %}
+           {% include('tricks/_seeMedias.html.twig') %}
 
         </div>
         {% endfor %}
@@ -131,7 +99,23 @@
         </div>
     </div>
     {% endfor %}
-{# {% endif %} #}
 </section>
     
+
+    {# <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+$(document).ready(function(){
+    $(".seeMedia").click(function() {
+            $("#media").toggle();
+            $("#seeMedia").toggle();
+        }); #}
+
+    
+
+ 	{# //Bouton voir plus #}
+
+
+
+{# });
+    </script> #}
 {% endblock %}

@@ -8,6 +8,7 @@ use App\Entity\Figure;
 use App\Entity\Avatar;
 use App\Entity\Comment;
 use App\Entity\Category;
+use App\ToolDevice\Slugification;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -26,7 +27,7 @@ class FigureFixtures extends Fixture
 		$faker = \Faker\Factory::create('fr_FR');
 		
 		//Gestion des users
-		$iusers = [];
+		$users = [];
 		$genres = ['male', 'female'];
 
 		for($i = 1; $i<= 10; $i++)
@@ -40,27 +41,27 @@ class FigureFixtures extends Fixture
 			$picture .= ($genre == "male" ? 'men/' : 'women/') . $pictureId; 
 
 			$password = $this->encoder->encodePassword($user, 'azertyuiop');
+			$slugificator = new Slugification();
 
 			$user->setFirstName($faker->firstname)
 				 ->setLastName($faker->lastname)
 				 ->setEmail($faker->email)
 				 ->setUsername($faker->username)
-				 ->setSlug($faker->username)
+				 ->setSlug($slugificator->slugify($user->getFirstName() . ' ' . $user->getLastName()))
 				 ->setDescription('<p>' . join( '</p><p>', $faker->paragraphs(3)) . '</p>')
 				 ->setPassword($password);
 
 				 $avatar = new Avatar;
 
 				 $avatar->setName($picture)
-						 ->setUser($user);
-						 
+						->setUser($user);
+
 				$manager->persist($avatar);
 
 			$manager->persist($user);
 			$users[] = $user;
 
 		}
-
 
         // 4 fake categories
         for($i = 1; $i <= 4; $i++)
@@ -100,7 +101,7 @@ class FigureFixtures extends Fixture
 				$manager->persist($figure);
 
 				//Visuals of figure
-				for($m = 1; $m <= mt_rand(4,10); $m++)
+				for($m = 1; $m <= mt_rand(20,50); $m++)
 				{
 					$visual = new Visual();
 					

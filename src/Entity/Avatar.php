@@ -51,7 +51,7 @@ class Avatar
         return $this->file;
     }
 
-    public function setFile( UploadedFile $file)
+    public function setFile($file)
     {
         $this->file = $file;
 
