@@ -191,7 +191,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/admin", name="security_admin")
+     * @Route("/user", name="security_admin")
      */
     public function admin()
     {
