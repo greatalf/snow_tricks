@@ -81,7 +81,7 @@ class User implements UserInterface
     private $lastName;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Avatar", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Avatar", mappedBy="user")
      */
     private $avatar;
 

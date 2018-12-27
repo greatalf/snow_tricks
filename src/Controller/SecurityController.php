@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Avatar;
 use App\Form\EditProfileType;
+use App\Entity\PasswordUpdate;
 use App\Form\RegistrationType;
+use App\Form\PasswordUpdateType;
 use App\ToolDevice\Slugification;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,6 +80,7 @@ class SecurityController extends AbstractController
         
         if($form->isSubmitted() && $form->isValid())
         {       
+            $path = $this->getParameter('uploads_directory');
             $user = $form->getData();
             
             $avatar = $user->getAvatar();
@@ -89,7 +93,7 @@ class SecurityController extends AbstractController
                 $avatar = new Avatar;
 
                 $name = md5(uniqid()) . '.' . $file->guessExtension();
-                $file->move('../public/avatars', $name);
+                $file->move($path, $name);
                 $avatar->setName($name)
                         ->setUser($user);
 
@@ -104,7 +108,7 @@ class SecurityController extends AbstractController
                 'success',
                 'Votre profil a bien été mis à jour'
             );
-            // die;
+            
             return $this->redirectToRoute('security_admin');
         }
 
@@ -112,6 +116,51 @@ class SecurityController extends AbstractController
             'form' => $form->createView(),
             'user' => $user
         ]);
+    }
+
+    /**
+     * @Route("admin/account/password-update", name="security_update_password")
+     */
+    public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder, Objectmanager $manager)
+    {
+        $passwordUpdate = new PasswordUpdate();
+        $user = $this->getUser();
+
+        $form = $this->createForm(PasswordUpdateType::class, $passwordUpdate);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            if(!password_verify($passwordUpdate->getOldPass(), $user->getPassword()))
+            {
+                $form->get('oldPass')->addError(new FormError("Le mot de passe actuel est invalide"));
+                // $this->addFlash(
+                // 'danger',
+                // 'L\'ancien mot de passe est invalide'
+                // );
+                // return $this->redirectToRoute('security_update_password');
+            }
+            else
+            {
+                $newPassword = $passwordUpdate->getNewPass();
+                $hash = $encoder->encodePassword($user, $newPassword);
+                $user->setPassword($hash);
+
+                $manager->persist($user);
+                $manager->flush();
+
+                $this->addFlash(
+                    'success',
+                    'Votre mot de passe a été modifié avec succès'
+                    );
+                return $this->redirectToRoute('security_admin');
+            }
+        }
+
+        return $this->render('security/password.html.twig', [
+            'form' => $form->createView()
+            ]);
     }
 
     /**
