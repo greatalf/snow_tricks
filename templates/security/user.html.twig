@@ -22,7 +22,10 @@
         </div> 
         <div class="col-9">
             <h1>{{user.fullName}}</h1>
-            <a href="{{ path('security_edit_profil') }}">Editer mon profil</a>
+            {% if user is same as (app.user) %}
+                <a href="{{ path('security_edit_profil') }}" class="btn btn-primary mr-2">Editer mon profil</a>
+                <a href="{{ path('security_update_password') }}" class="btn btn-primary mr-2">Modifier mon mot de passe</a>
+            {% endif %}
         </div>
     </div>
     <br>

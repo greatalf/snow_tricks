@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Avatar;
-use App\ToolDevice\Slugification;
-use App\Form\RegistrationType;
 use App\Form\EditProfileType;
+use App\Form\RegistrationType;
+use App\ToolDevice\Slugification;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -142,7 +142,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/admin", name="security_admin")
+     * @Route("/user", name="security_admin")
      */
     public function admin()
     {

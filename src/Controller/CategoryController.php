@@ -8,11 +8,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Form\CategoryType;
 use App\Entity\Category;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class CategoryController extends AbstractController
 {
     /**
-     * @Route("/categories", name="category")
+     * @Route("admin/categories", name="category")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function index(Request $request, Objectmanager $manager)
     {
