@@ -112,7 +112,7 @@ class FigureFixtures extends Fixture
 					$manager->persist($visual);
 				}
         		//Comments of figure
-        		for($k = 1; $k <= mt_rand(2,4); $k++)
+        		for($k = 1; $k <= mt_rand(12,20); $k++)
         		{
         			$content = '<p>' . join($faker->paragraphs(2), '</p><p>') . '</p>';
         			$now = new \DateTime();

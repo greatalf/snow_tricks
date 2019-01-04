@@ -17,7 +17,7 @@ class CategoryController extends AbstractController
      * @Route("admin/categories", name="category")
      * @IsGranted("ROLE_ADMIN")
      */
-    public function index(Request $request, Objectmanager $manager)
+    public function index(Request $request, ObjectManager $manager)
     {
         $category = new Category;
         $form = $this->createForm(CategoryType::class, $category);

@@ -10,112 +10,109 @@
   flex-direction: row;
   justify-content: flex-end;
   }
+  .avatar-mini{
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
 </style>
 
 
 
-<article>
-    <section class="row containeur">
-        <div class="col-12" style=" padding:0px 0px 0px 0px; justify-content:flex-start;">
+    <article>
+        <section class="row containeur">
+            <div class="col-12" style=" padding:0px 0px 0px 0px; justify-content:flex-start;">
 
-        <div class="mt-3" style="position: relative; display: inline-block; width: 100%;">
-            <img class="container-fluid img-responsive" style="max-height: 600px; width:100%;" src="{{ figure.headVisual }}">
-            <p style="position: absolute; width: 100%; top: 30%; text-align: center; font-size: 60px; color: #007BFF; text-shadow: 2px 2px 1px #000000">{{ figure.title }}</p>
+            <div class="mt-3" style="position: relative; display: inline-block; width: 100%;">
+                <img class="container-fluid img-responsive" style="max-height: 600px; width:100%;" src="{{ figure.headVisual }}">
+                <p style="position: absolute; width: 100%; top: 30%; text-align: center; font-size: 60px; color: #FFFFFF; text-shadow: 2px 2px 1px #000000">{{ figure.title }}</p>
 
-            {% if app.user %}
-                <div style="border: 3px solid #007BFF; border-radius: 5px; position: absolute; width: 12%; height: 30px; top: 5%; left: 80%; font-size: 20px; color: #007BFF; box-shadow: 2px 2px 1px #000000">
-                    <p><a href="{{ path('head_visual_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="position: absolute; width: 20%; top: 9%; left: 20%; font-size: 20px; color: #009BFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
-                    <p><a href="{{ path('head_visual_delete', {'slug': figure.slug}) }}"><i class="fa fa-trash-o" style="position: absolute; width: 20%; top: 9%; left: 65%; font-size: 20px; color: #007BFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
-                </div>            
+                {% if app.user %}
+                    <div style="border: 3px solid #FFFFFF; border-radius: 5px; position: absolute; width: 12%; height: 30px; top: 5%; left: 80%; font-size: 20px; color: #FFFFFF; box-shadow: 2px 2px 1px #000000">
+                        <p><a href="{{ path('head_visual_edit', {'slug': figure.slug}) }}"><i class="fa fa-pencil" style="position: absolute; width: 20%; top: 9%; left: 20%; font-size: 20px; color: #FFFFFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
+                        <p><a href="{{ path('head_visual_delete', {'slug': figure.slug}) }}"><i class="fa fa-trash-o" style="position: absolute; width: 20%; top: 9%; left: 65%; font-size: 20px; color: #FFFFFF; text-shadow: 2px 2px 1px #000000"></i></a></p>
+                    </div>            
+                {% endif %}
+
+            </div>
+        </section>
+
+        <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-around; align-items: center; line-height:5px; margin-top: 15px;">
+            {% for visual in figure.visuals | slice(0, 10) %}
+            <div>
+
+            {% include('tricks/_seeMedias.html.twig') %}
+
+            </div>
+            {% endfor %}
+        </section>
+
+        <h2>{{ figure.title}}</h2>
+        <div class="content">
+            {{ figure.content|raw }}
+            <h4 class="text-center">
+            <span title="Date de création" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.createdAt | date('d/m/Y') }} <small> à {{ figure.createdAt | date('H:i') }}</small></span>
+            <span title="Catégorie" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.category.name }}</span>
+            {% if figure.modifiedAt %}
+                <span title="Date de modification" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.modifiedAt | date('d/m/Y') }} <small> à {{ figure.modifiedAt | date('H:i') }}</small></span>
             {% endif %}
-
+            </h4>
         </div>
-    </section>
 
-    <section style="display:flex; flex-wrap: wrap; flex-direction:row; justify-content:space-around; align-items: center; line-height:5px; margin-top: 15px;">
-        {% for visual in figure.visuals | slice(0, 10) %}
-        <div>
+    </article>
+    <hr>
+        {% if app.user %}
+            <div class="row text-center">
+                <div class="col-6 offset-2" style="height-line:5px">
+                    {{ form_start(CommentForm) }}
+                    {{ form_widget(CommentForm.content, {'attr': {
+                        'placeholder' : 'Votre message'
+                    }}) }}
+                    {{ form_row(CommentForm._token) }}
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Laisser un message</button>
+                </div>
+            </div>
+        {% else %}
+            <p>Vous devez être connecté pour commenter.</p>
+            <a href="{{ path('security_connexion') }}"><button class="btn btn-primary"><strong style="color:#FFFFFF;">Me connecter</strong></button></a>
+        {% endif %}
+    <hr>
 
-           {% include('tricks/_seeMedias.html.twig') %}
 
+    <section>
+        {% if figure.comments|length == 0 %}
+            <h3>Pas encore de commentaire</h3>
+        {% else %}
+            <h3>{{ figure.comments|length }} Commentaire(s)</h3>
+        {% endif %}
+        <br>
+        {% for comment in comments %}
+        <div class="container">
+            <div class="row loop">
+                <div class="col-2 mb-4" style="display:flex; justify-content: space-around; align-items: center;">
+                    {% if comment.author.avatar.name is defined %}
+                    <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><img class="avatar-mini" src="{{comment.author.avatar.name }}"></span>
+                    {% else %}
+                    <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle avatar-mini" style="width:50px; font-size:48px"></i></span>
+                    {% endif %}
+                </div>
+                <div class="col-10 mb-4" style="min-height: 50px; padding:20px; border: 2px dashed #31A5E7">
+                    {{ comment.content|raw }}
+                </div>
+            </div>
         </div>
         {% endfor %}
+        <input type="hidden" id="limitPerPage" value="{{ limitPerPage }}">
+        {% dump(limitPerPage) %}
     </section>
 
-    <h2>{{ figure.title}}</h2>
-    <div class="content">
-        {{ figure.content|raw }}
-        <h4 class="text-center">
-          <span title="Date de création" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.createdAt | date('d/m/Y') }} <small> à {{ figure.createdAt | date('H:i') }}</small></span>
-          <span title="Catégorie" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.category.name }}</span>
-          {% if figure.modifiedAt %}
-            <span title="Date de modification" data-toggle="popover" data-trigger="hover" class="badge badge-success">{{ figure.modifiedAt | date('d/m/Y') }} <small> à {{ figure.modifiedAt | date('H:i') }}</small></span>
-          {% endif %}
-        </h4>
+    <div class="d-flex justify-content-center">
+    <ul class="pagination">
+        <li class="page-item">
+            <a id="previous-page" class="page-link" href="javascipt:void(0)">&laquo;</a>
+        </li>        
+    </ul>
     </div>
-
-</article>
-<hr>
-    {% if app.user %}
-        <div class="row text-center">
-            <div class="col-6 offset-2" style="height-line:5px">
-                {{ form_start(CommentForm) }}
-                {{ form_widget(CommentForm.content, {'attr': {
-                    'placeholder' : 'Votre commentaire'
-                }}) }}
-                {{ form_row(CommentForm._token) }}
-            </div>
-            <div class="col-2">
-                <button type="submit" class="btn btn-primary">Laisser un commentaire</button>
-            </div>
-        </div>
-    {% else %}
-        <p>Vous devez être connecté pour commenter.</p>
-        <a href="{{ path('security_connexion') }}"><button class="btn btn-primary"><strong style="color:#FFFFFF;">Me connecter</strong></button></a>
-    {% endif %}
-<hr>
-
-
-<section>
-    {% if figure.comments|length == 0 %}
-        <h3>Pas encore de commentaire</h3>
-    {% else %}
-        <h3>{{ figure.comments|length }} Commentaire(s)</h3>
-    {% endif %}
-    <br>
-    {% for comment in figure.comments %}
-    <div class="container">
-        <div class="row">
-            <div class="col-2 mb-4" style="display:flex; justify-content: space-around; align-items: center;">
-                {% if comment.author.avatar.name is defined %}
-                <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><img class="avatar-mini" src="../avatars/{{comment.author.avatar.name }}"></span>
-                {% else %}
-                <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle avatar-mini" style="width:50px; font-size:48px"></i></span>
-                {% endif %}
-            </div>
-            <div class="col-10 mb-4" style="min-height: 50px; padding:20px; border: 2px dashed #31A5E7">
-                {{ comment.content|raw }}
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</section>
-    
-
-    {# <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script>
-$(document).ready(function(){
-    $(".seeMedia").click(function() {
-            $("#media").toggle();
-            $("#seeMedia").toggle();
-        }); #}
-
-    
-
- 	{# //Bouton voir plus #}
-
-
-
-{# });
-    </script> #}
 {% endblock %}

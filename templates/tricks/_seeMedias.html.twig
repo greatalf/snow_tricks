@@ -17,7 +17,7 @@
         <img style="width: 160px; height: 100px; margin:0px 0px 10px 0px;" src="{{ visual.url }}" alt="">
     </a>
     {% if app.user %}
-    <div class="col-6 offset-6"  style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px;">
+    <div class="col-6 offset-6"  style="display: flex; justify-content: flex-end; border-radius:2px; box-shadow: 1px 1px 5px; margin-bottom:20px;">
         <div class="col-1" style:"padding:0px;">
             <a href="{{ path('visual_edit', {'id': visual.id, 'slug': figure.slug}) }}"><i class="fa fa-pencil" style="font-size:18px"></i></a>
         </div>

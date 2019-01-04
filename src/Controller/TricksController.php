@@ -3,35 +3,28 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Entity\Visual;
 use App\Entity\Figure;
+use App\Entity\Visual;
 use App\Entity\Comment;
-use App\Form\CommentType;
-use App\Form\VisualType;
-use App\Form\EditHeadVisualType;
-use App\Form\EditVisualType;
-use App\Form\FigureType;
 use App\Entity\Category;
+use App\Form\FigureType;
+use App\Form\VisualType;
+use App\Form\CommentType;
+use App\Form\EditVisualType;
+use App\Form\EditHeadVisualType;
 use App\Repository\FigureRepository;
+use App\Repository\CommentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TricksController extends AbstractController
 { 
     /**
-     *@Route("/", name="home")
-     */
-    public function home(FigureRepository $repo)
-    {        
-        $figures = $repo->findAll();
-
-        return $this->render('tricks/home.html.twig', ['figures' => $figures]);
-    }
-
-    /**
     * @Route("/tricks/new", name="tricks_create")
+    * @IsGranted("ROLE_USER")
     */
     public function create(Figure $figure = null, Request $request, ObjectManager $manager)
     {        
@@ -104,6 +97,7 @@ class TricksController extends AbstractController
         
         /**
         * @Route("/tricks/{slug}/edit", name="tricks_edit")
+        * @IsGranted("ROLE_USER")
         */
         public function edit(Figure $figure, Request $request, ObjectManager $manager)
         {
@@ -171,6 +165,7 @@ class TricksController extends AbstractController
 
         /**
          * @Route("/tricks/{slug}/delete", name="tricks_delete")
+         * @IsGranted("ROLE_USER")
          */    
         public function delete(Figure $figure, ObjectManager $manager)
         {     
@@ -189,38 +184,48 @@ class TricksController extends AbstractController
         /**
          * @Route("/tricks/{slug}", name="tricks_show")
          */
-        public function show(Figure $figure = null, ObjectManager $manager, Request $request)
+        public function show(Figure $figure = null, Comment $comment, ObjectManager $manager, Request $request, CommentRepository $repoCom, FigureRepository $repoFig, $page = 1)
         {     
             $comment = new Comment();
+            // dump($comments);
+            // die;
             $form = $this->createForm(CommentType::class, $comment);
-
+            
+            $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
             $form->handleRequest($request);
-
+            
             if($form->isSubmitted() && $form->isValid())
             {            
                 if($this->getUser() == null)
                 {
                     return $this->redirectToRoute('security_connexion');
                 }
-
+                
                 $comment->setCreatedAt(new \Datetime())
                         ->setFigure($figure)
                         ->setAuthor($this->getUser());
 
                 $manager->persist($comment);
                 $manager->flush();
-
+                
                 return $this->redirectToRoute('tricks_show', ['slug' => $figure->getSlug()]);
             }
+            $limit = $this->getParameter('comment_per_page');
+            // $start = $page * $limit - $limit;
+            // $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], array(), $limit, $start) : '';
+            $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], ['modifiedAt' => 'DESC'], count($figure->getComments())) : '';
 
             return $this->render('tricks/show.html.twig', [
                 'figure' => $figure,
+                'comments' => $comments,
+                'limitPerPage' => $this->getParameter('comment_per_page'),
                 'CommentForm' => $form->createView()
             ]);
         }
         
         /**
         * @Route("/tricks/{slug}/editHeadVisual", name="head_visual_edit")
+        * @IsGranted("ROLE_USER")
         */
         public function editHeadVisual(Figure $figure, Request $request, ObjectManager $manager)
         {
@@ -266,6 +271,7 @@ class TricksController extends AbstractController
 
         /**
          * @Route("/tricks/{slug}/deleteHeadVisual", name="head_visual_delete")
+         * @IsGranted("ROLE_USER")
          */    
         public function deleteHeadVisual(Figure $figure, ObjectManager $manager)
         {     
@@ -288,6 +294,7 @@ class TricksController extends AbstractController
 
         /**
         * @Route("/tricks/{slug}/editVisual/{id}", name="visual_edit")
+        * @IsGranted("ROLE_USER")
         */
         public function editVisual(Visual $visual = null, FigureRepository $repo, Request $request, ObjectManager $manager)
         {
@@ -338,6 +345,7 @@ class TricksController extends AbstractController
 
         /**
         * @Route("/tricks/{slug}/deleteVisual/{id}", name="visual_delete")
+        * @IsGranted("ROLE_USER")
         */
         public function deleteVisual(Visual $visual = null, FigureRepository $repo, Request $request, ObjectManager $manager)
         {            

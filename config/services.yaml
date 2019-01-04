@@ -6,6 +6,7 @@
 parameters:
     locale: 'fr'
     uploads_directory: '%kernel.project_dir%/public/avatars'
+    comment_per_page: 3
 
 services:
     # default configuration for services in *this* file

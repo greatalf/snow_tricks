@@ -12,6 +12,7 @@ use App\ToolDevice\Slugification;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -70,6 +71,8 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/admin/profil/edit", name="security_edit_profil")
+     * @IsGranted("ROLE_USER")
+     * 
      */
     public function profil(Request $request, Objectmanager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
     {
@@ -120,6 +123,7 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("admin/account/password-update", name="security_update_password")
+     * @IsGranted("ROLE_USER")
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder, Objectmanager $manager)
     {
@@ -135,11 +139,6 @@ class SecurityController extends AbstractController
             if(!password_verify($passwordUpdate->getOldPass(), $user->getPassword()))
             {
                 $form->get('oldPass')->addError(new FormError("Le mot de passe actuel est invalide"));
-                // $this->addFlash(
-                // 'danger',
-                // 'L\'ancien mot de passe est invalide'
-                // );
-                // return $this->redirectToRoute('security_update_password');
             }
             else
             {
@@ -191,7 +190,8 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/user", name="security_admin")
+     * @Route("/admin", name="security_admin")
+     * @IsGranted("ROLE_USER")
      */
     public function admin()
     {
