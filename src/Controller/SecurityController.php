@@ -198,10 +198,60 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * @Route("/forgotten-pass", name="forgotten_pass")
+     */ 
+    public function forgotten_pass(Request $request, UserPasswordEncoderInterface $encoder, Objectmanager $manager)
+    {
+        if($this->getUser() !== NULL)
+        {
+            $this->addFlash(
+                'danger',
+                'Vous êtes déjà connecté...'
+            );
+            return $this->redirectToRoute('home');
+        }
+
+        $passwordUpdate = new PasswordUpdate();
+        $user = $this->getUser();
+
+        $form = $this->createForm(PasswordUpdateType::class, $passwordUpdate);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $newPassword = $passwordUpdate->getNewPass();
+            $hash = $encoder->encodePassword($user, $newPassword);
+            $user->setPassword($hash);
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre mot de passe a été modifié avec succès'
+                );
+            return $this->redirectToRoute('security_admin');
+    
+        }
+
+        return $this->render('security/password.html.twig', [
+            'form' => $form->createView()
+        ]);    }
+    
+    /**
      * @Route("/connexion", name="security_connexion")
      */ 
     public function connexion(AuthenticationUtils $utils)
     {
+        if($this->getUser() !== NULL)
+        {
+            $this->addFlash(
+                'danger',
+                'Vous êtes déjà connecté...'
+            );
+            return $this->redirectToRoute('home');
+        }
         $error = $utils->getLastAuthenticationError();
         $username = $utils->getLastUsername();
 
