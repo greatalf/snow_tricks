@@ -213,7 +213,7 @@ class TricksController extends AbstractController
             $limit = $this->getParameter('comment_per_page');
             // $start = $page * $limit - $limit;
             // $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], array(), $limit, $start) : '';
-            $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], ['modifiedAt' => 'DESC'], count($figure->getComments())) : '';
+            $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], ['modifiedAt' => 'ASC'], count($figure->getComments())) : '';
 
             return $this->render('tricks/show.html.twig', [
                 'figure' => $figure,
@@ -231,21 +231,22 @@ class TricksController extends AbstractController
         {
             $formEditHeadVisual = $this->createForm(EditHeadVisualType::class, $figure);
             $formEditHeadVisual->handleRequest($request);
-            
-            if($formEditHeadVisual->isSubmitted() && $formEditHeadVisual->isValid())
+
+            if($formEditHeadVisual->isSubmitted())
             {                
                 if(!$this->isHeadVisualValid($figure))
                 {
+                    die('isHeadVisualValid nest pas valide');
                     $this->addFlash(
-                    'danger',
+                        'danger',
                     "Cette URL ne présente pas une image valide(jpeg, jpg, png, aspx)"
                     );
                     return $this->render('security/editHeadVisual.html.twig', [
                     'formEditHeadVisual' => $formEditHeadVisual->createView(),
                     'figure'             => $figure
-                        ]);
+                    ]);
                 }   
-
+dump($this->isHeadVisualValid($figure));
                 $figure->setHeadVisual($figure->getHeadVisual());
                
                 $dateModified = (new \Datetime());
@@ -256,12 +257,12 @@ class TricksController extends AbstractController
                 $this->addFlash(
                     'success',
                     'L\'image à la une de la figure ' . $figure->getTitle() . ' a bien été modifiée!'
-                    );
+                );
         
                 return $this->redirectToRoute('tricks_show', [
                     'slug' => $figure->getSlug()
                     ]);
-            }
+                }
             return $this->render('security/editHeadVisual.html.twig', [
             'formEditHeadVisual'   => $formEditHeadVisual->createView(),
             'figure' => $figure
@@ -354,12 +355,19 @@ class TricksController extends AbstractController
                 $this->addFlash(
                     'success',
                     'Le média n\'existe pas'
-                );
-                
-                // Traiter le cas si l'image n'existe pas = NULL
+                );                
+                return $this->render('security/404.html.twig');
+            }
+            $figure = $repo->findOneById($visual->getFigure());
+            if($figure == NULL)
+            {
+                $this->addFlash(
+                    'success',
+                    'Le média n\'existe pas'
+                );                
+                return $this->render('404.html.twig');
             }
                 
-            $figure = $repo->findOneById($visual->getFigure());
                 
             $manager->remove($visual);
 
