@@ -5,6 +5,13 @@
 
 <h1>Modifier l'image d'affiche de la figure <u>{{ figure.title }}</u></h1>
 <br>
+{% for label, messages in app.flashes %}
+	{% for message in messages %}
+		<div class="alert alert-{{ label }}">
+			{{ message }}
+		</div>
+	{% endfor %}
+{% endfor %}
 <hr>
 
 

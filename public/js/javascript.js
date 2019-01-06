@@ -1,8 +1,4 @@
 $(document).ready(function (){
-
-'use strict';
-
-
     var nombreItems = $(".loop").length;
     var limitPerPage = $('#limitPerPage').val();
     $(".loop:gt(" + (limitPerPage - 1) + ")").hide();
@@ -15,7 +11,7 @@ $(document).ready(function (){
         $(".pagination").append("<li class='page-item current-page'><a class='page-link' href='javascript:void(0)'>" + i + "</a></li>");
     }
 
-    $(".pagination").append("<li id='next-page' class='page-item'><a class='page-link' href='javascipt:void(0)'>&raquo;</a></li>");
+    $(".pagination").append("<li id='next-page' class='page-item'><a class='page-link' href='javascript:void(0)'>&raquo;</a></li>");
 
     $(".pagination li.current-page").on("click", function(){
         if($(this).hasClass("active")){
@@ -29,7 +25,7 @@ $(document).ready(function (){
             var grandTotal = limitPerPage * currentPage;
 
             for (var i = grandTotal - limitPerPage; i < grandTotal; i++){
-                $(".loop:eq(" + i + ")").show();
+                $(".loop:eq(" + i + ")").fadeIn();
             }
         }
 
@@ -47,7 +43,7 @@ $(document).ready(function (){
             var grandTotal = limitPerPage * currentPage;
 
             for (var i = grandTotal - limitPerPage; i < grandTotal; i++) {
-                $(".loop:eq(" + i + ")").show();
+                $(".loop:eq(" + i + ")").fadeIn("slow")
             }
             $(".pagination li.current-page:eq(" + (currentPage - 1) + ")").addClass("active");
         }
@@ -65,9 +61,23 @@ $(document).ready(function (){
             var grandTotal = limitPerPage * currentPage;
 
             for (var i = grandTotal - limitPerPage; i < grandTotal; i++) {
-                $(".loop:eq(" + i + ")").show();
+                $(".loop:eq(" + i + ")").fadeIn("slow")
             }
             $(".pagination li.current-page:eq(" + (currentPage - 1) + ")").addClass("active");
         }
+    });
+
+    ////////////////////////////////////////////////////
+    /////////////////SCROLL SMOOTH//////////////////////
+    ////////////////////////////////////////////////////
+    $('a[href^="#AnchComment"]').click(function () {
+        var the_id = $(this).attr("href");
+        if (the_id === '#') {
+            return;
+        }
+        $('html, body').animate({
+            scrollTop: $(the_id).offset().top
+        }, 'slow');
+        return false;
     });
 });

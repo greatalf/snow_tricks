@@ -12,6 +12,8 @@ use App\ToolDevice\Slugification;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -173,7 +175,8 @@ class SecurityController extends AbstractController
             return new Response(new InvalidCsrfTokenException());
         }
 
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $request->get('user')]);
+        // $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $request->get('user')]);
+        $user = $this->getUser();
 
         if (!$user)
         {

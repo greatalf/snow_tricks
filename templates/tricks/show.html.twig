@@ -17,7 +17,7 @@
 }
 </style>
 
-
+<a style="position:fixed; bottom:30px; right:30px; z-index:2;" href="#AnchComment"><button class="btn btn-dark btn-sm">Commentaires</button></a>
 
     <article>
         <section class="row containeur">
@@ -83,11 +83,21 @@
 
     <section>
         {% if figure.comments|length == 0 %}
-            <h3>Pas encore de commentaire</h3>
+            <h3 id="AnchComment">Pas encore de commentaire</h3>
         {% else %}
-            <h3>{{ figure.comments|length }} Commentaire(s)</h3>
+            <h3 id="AnchComment">{{ figure.comments|length }} Commentaire(s)</h3>
         {% endif %}
+
+        <div class="d-flex justify-content-start">
+            <ul class="pagination pagination-sm">
+                <li class="page-item">
+                    <a id="previous-page" class="page-link" href="#AnchComment">&laquo;</a>
+                </li>        
+            </ul>
+        </div>
+
         <br>
+
         {% for comment in comments %}
         <div class="container">
             <div class="row loop">
@@ -100,19 +110,12 @@
                 </div>
                 <div class="col-10 mb-4" style="min-height: 50px; padding:20px; border: 2px dashed #31A5E7">
                     {{ comment.content|raw }}
+                    <div class="small d-flex justify-content-end"><i>Écrit par {{ comment.author.username }}, le {{ comment.createdAt|date('d/m/Y à H:i') }}</i></div>
                 </div>
             </div>
         </div>
         {% endfor %}
         <input type="hidden" id="limitPerPage" value="{{ limitPerPage }}">
-        {% dump(limitPerPage) %}
     </section>
 
-    <div class="d-flex justify-content-center">
-    <ul class="pagination">
-        <li class="page-item">
-            <a id="previous-page" class="page-link" href="javascipt:void(0)">&laquo;</a>
-        </li>        
-    </ul>
-    </div>
 {% endblock %}
