@@ -6,12 +6,7 @@ namespace App\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class PasswordUpdate
-{
-    /**
-     * 
-     */
-    private $oldPass;
-    
+{    
     /**
      * @Assert\Length(min=6)
      */

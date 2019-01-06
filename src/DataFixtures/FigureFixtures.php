@@ -49,7 +49,9 @@ class FigureFixtures extends Fixture
 				 ->setUsername($faker->username)
 				 ->setSlug($slugificator->slugify($user->getFirstName() . ' ' . $user->getLastName()))
 				 ->setDescription('<p>' . join( '</p><p>', $faker->paragraphs(3)) . '</p>')
-				 ->setPassword($password);
+				 ->setPassword($password)
+				 ->setConfirmed(1)
+				 ->setToken(md5(uniqid()));
 
 				 $avatar = new Avatar;
 

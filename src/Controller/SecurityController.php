@@ -137,26 +137,20 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
-        {
-            if(!password_verify($passwordUpdate->getOldPass(), $user->getPassword()))
-            {
-                $form->get('oldPass')->addError(new FormError("Le mot de passe actuel est invalide"));
-            }
-            else
-            {
-                $newPassword = $passwordUpdate->getNewPass();
-                $hash = $encoder->encodePassword($user, $newPassword);
-                $user->setPassword($hash);
+        {            
+            $newPassword = $passwordUpdate->getNewPass();
+            $hash = $encoder->encodePassword($user, $newPassword);
+            $user->setPassword($hash);
 
-                $manager->persist($user);
-                $manager->flush();
+            $manager->persist($user);
+            $manager->flush();
 
-                $this->addFlash(
-                    'success',
-                    'Votre mot de passe a été modifié avec succès'
-                    );
-                return $this->redirectToRoute('security_admin');
-            }
+            $this->addFlash(
+                'success',
+                'Votre mot de passe a été modifié avec succès'
+                );
+            return $this->redirectToRoute('security_admin');
+            
         }
 
         return $this->render('security/password.html.twig', [
@@ -193,7 +187,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/admin", name="security_admin")
+     * @Route("/user", name="security_admin")
      * @IsGranted("ROLE_USER")
      */
     public function admin()

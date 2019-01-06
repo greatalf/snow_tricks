@@ -26,7 +26,7 @@ class TricksController extends AbstractController
     * @Route("/tricks/new", name="tricks_create")
     * @IsGranted("ROLE_USER")
     */
-    public function create(Request $request, ObjectManager $manager)
+    public function create(Figure $figure = NULL, Request $request, ObjectManager $manager)
     {        
         $figure = new Figure();        
         
@@ -99,7 +99,7 @@ class TricksController extends AbstractController
         * @Route("/tricks/{slug}/edit", name="tricks_edit")
         * @IsGranted("ROLE_USER")
         */
-        public function edit(Figure $figure, Request $request, ObjectManager $manager)
+        public function edit(Figure $figure = NULL, Request $request, ObjectManager $manager)
         {
             $form = $this->createForm(FigureType::class, $figure);
             $form->handleRequest($request);
@@ -183,7 +183,7 @@ class TricksController extends AbstractController
         /**
          * @Route("/tricks/{slug}", name="tricks_show")
          */
-        public function show(Figure $figure = null, Comment $comment, ObjectManager $manager, Request $request, CommentRepository $repoCom, FigureRepository $repoFig, $page = 1)
+        public function show(Figure $figure = null, Comment $comment = null, ObjectManager $manager, Request $request, CommentRepository $repoCom, FigureRepository $repoFig)
         {     
             $comment = new Comment();
             $form = $this->createForm(CommentType::class, $comment);
@@ -197,8 +197,9 @@ class TricksController extends AbstractController
                 {
                     return $this->redirectToRoute('security_connexion');
                 }
-                
+
                 $comment->setCreatedAt(new \Datetime())
+                        ->setContent($comment->getContent())
                         ->setFigure($figure)
                         ->setAuthor($this->getUser());
 
@@ -208,9 +209,7 @@ class TricksController extends AbstractController
                 return $this->redirectToRoute('tricks_show', ['slug' => $figure->getSlug()]);
             }
             $limit = $this->getParameter('comment_per_page');
-            // $start = $page * $limit - $limit;
-            // $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], array(), $limit, $start) : '';
-            $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], ['modifiedAt' => 'ASC'], count($figure->getComments())) : '';
+            $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], ['createdAt' => 'DESC'], count($figure->getComments())) : '';
 
             return $this->render('tricks/show.html.twig', [
                 'figure' => $figure,

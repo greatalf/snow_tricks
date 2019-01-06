@@ -18,7 +18,11 @@
 
 
             <br>
-            <span class="badge badge-primary">{{user.figures|length}} figure(s)</span>
+            {# {% if user.figures|length %} #}
+                <span class="badge badge-primary">{{user.figures|length}} figure(s)</span>
+            {# {% else %}
+                <span class="badge badge-primary">Pas de figure</span>
+            {% endif %} #}
         </div> 
         <div class="col-9">
             <h1>{{user.fullName}}</h1>

@@ -31,6 +31,5 @@ final class Version20181219143122 extends AbstractMigration
         $this->addSql('DROP TABLE role');
         $this->addSql('DROP TABLE role_user');
         $this->addSql('ALTER TABLE user DROP token, DROP confirmed');
-        $this->addSql('ALTER TABLE visual RENAME INDEX idx_ebc9881f5c011b5 TO IDX_C53D045F4F34D596');
     }
 }

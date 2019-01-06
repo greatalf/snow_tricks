@@ -86,15 +86,15 @@
             <h3 id="AnchComment">Pas encore de commentaire</h3>
         {% else %}
             <h3 id="AnchComment">{{ figure.comments|length }} Commentaire(s)</h3>
+            <div class="d-flex justify-content-start">
+                <ul class="pagination pagination-sm">
+                    <li class="page-item">
+                        <a id="previous-page" class="page-link" href="#AnchComment">&laquo;</a>
+                    </li>        
+                </ul>
+            </div>
         {% endif %}
 
-        <div class="d-flex justify-content-start">
-            <ul class="pagination pagination-sm">
-                <li class="page-item">
-                    <a id="previous-page" class="page-link" href="#AnchComment">&laquo;</a>
-                </li>        
-            </ul>
-        </div>
 
         <br>
 
