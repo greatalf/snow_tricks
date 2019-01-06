@@ -8,10 +8,12 @@ DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
 ```
 Normally on Windows, you can make something like that : DATABASE_URL=mysql://root:@127.0.0.1:3306/tricks
 
-For the most great experience, you can do the same thing with line 23, puting your own Gmail email address:
+
+For a greatest experience, you can do the same thing with line 23, puting your own real Gmail informations :
 ```
 MAILER_URL=gmail://username:password@localhost
 ```
+More informations [HERE](https://symfony.com/doc/current/email.html)
 
 ## Configuring Database :
 In your favorite **CLI**, copy and paste the following code lines :
