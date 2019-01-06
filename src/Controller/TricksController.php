@@ -26,7 +26,7 @@ class TricksController extends AbstractController
     * @Route("/tricks/new", name="tricks_create")
     * @IsGranted("ROLE_USER")
     */
-    public function create(Figure $figure = null, Request $request, ObjectManager $manager)
+    public function create(Request $request, ObjectManager $manager)
     {        
         $figure = new Figure();        
         

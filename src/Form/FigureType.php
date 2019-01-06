@@ -17,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
 class FigureType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('title', TextType::class)
