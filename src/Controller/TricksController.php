@@ -169,7 +169,6 @@ class TricksController extends AbstractController
          */    
         public function delete(Figure $figure, ObjectManager $manager)
         {     
-            // die('La figure <u>' . $figure->getTitle() .'</u> est SUPPRIMEE pour de faux!');
             $manager->remove($figure);
             $manager->flush();
 
@@ -187,8 +186,6 @@ class TricksController extends AbstractController
         public function show(Figure $figure = null, Comment $comment, ObjectManager $manager, Request $request, CommentRepository $repoCom, FigureRepository $repoFig, $page = 1)
         {     
             $comment = new Comment();
-            // dump($comments);
-            // die;
             $form = $this->createForm(CommentType::class, $comment);
             
             $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
@@ -348,7 +345,7 @@ dump($this->isHeadVisualValid($figure));
         * @Route("/tricks/{slug}/deleteVisual/{id}", name="visual_delete")
         * @IsGranted("ROLE_USER")
         */
-        public function deleteVisual(Visual $visual = null, FigureRepository $repo, Request $request, ObjectManager $manager)
+        public function deleteVisual(Visual $visual = null, FigureRepository $repo, ObjectManager $manager)
         {            
             if($visual == NULL)
             {
@@ -366,8 +363,7 @@ dump($this->isHeadVisualValid($figure));
                     'Le média n\'existe pas'
                 );                
                 return $this->render('404.html.twig');
-            }
-                
+            }               
                 
             $manager->remove($visual);
 

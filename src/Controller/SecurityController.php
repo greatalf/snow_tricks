@@ -76,7 +76,7 @@ class SecurityController extends AbstractController
      * @IsGranted("ROLE_USER")
      * 
      */
-    public function profil(Request $request, Objectmanager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
+    public function profil(Request $request, Objectmanager $manager)
     {
         $user = $this->getUser();
         $form = $this->createForm(EditProfileType::class, $user);
