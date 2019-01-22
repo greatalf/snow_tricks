@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
@@ -153,7 +154,109 @@ class SecurityController extends AbstractController
             
         }
 
-        return $this->render('security/password.html.twig', [
+        return $this->render('security/updatePassword.html.twig', [
+            'form' => $form->createView()
+            ]);
+    }
+
+    /**
+     * @Route("/forgotten-password", name="forgotten_password")
+     */
+    function forgottenPass(Request $request, \Swift_Mailer $mailer)
+    {
+        $user = new User();
+        $form = $this->createFormBuilder($user)
+            ->add('email', EmailType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted())
+        {
+            $user = $form->getData();
+            $email = $user->getEmail();
+
+            $repository = $this->getDoctrine()->getRepository(User::class);
+            $userExist = $repository->findOneBy(['email' => $email]);
+
+            if(!$userExist)
+            {
+                $this->addFlash(
+                'danger',
+                'Cette adresse Email n\'existe pas!'
+                );
+                return $this->redirectToRoute('security_connexion');
+            }
+
+            $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
+                        ->setFrom('dev.adm974@gmail.com')
+                        ->setTo($userExist->getEmail())
+                        ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
+                                    Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">LIEN</a> pour le faire',
+                                    'text/html'); 
+                                    
+            $mailer->send($message);
+
+            $this->addFlash(
+            'success',
+            'Un email de réinitialisation de mot de passe vous a été envoyé à l\'adresse ' .  $userExist->getEmail());
+            
+            return $this->redirectToRoute('security_connexion');
+        }
+
+        return $this->render(
+            'security/updatePassword.html.twig', [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/reset-password", name="reset_password")
+     */
+    public function resetPassword(Request $request, UserPasswordEncoderInterface $encoder, Objectmanager $manager)
+    {
+        if(!($request->get('token')))
+        {
+            $this->addFlash(
+                'danger',
+                'Accès refusé!'
+                );
+            return $this->redirectToRoute('security_connexion');
+        }
+
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['token' => $request->get('token')]);
+
+        if(!($user) || !($request->get('token')) || ($user->getToken() !== $request->get('token')))
+        {
+            $this->addFlash(
+                'danger',
+                'Accès refusé!'
+                );
+            return $this->redirectToRoute('security_connexion');
+        }
+
+        $passwordUpdate = new PasswordUpdate();
+        $form = $this->createForm(PasswordUpdateType::class, $passwordUpdate);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {            
+
+            $newPassword = $passwordUpdate->getNewPass();
+            $hash = $encoder->encodePassword($user, $newPassword);
+            $user->setPassword($hash);
+
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre mot de passe a été réinitialisé avec succès :)'
+                );
+            return $this->redirectToRoute('security_connexion');
+            
+        }
+
+        return $this->render('security/updatePassword.html.twig', [
             'form' => $form->createView()
             ]);
     }
@@ -164,17 +267,15 @@ class SecurityController extends AbstractController
     public function confirm(Request $request)
     {
         $token = $request->get('token');
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['token' => $token]);
 
-        if (!$token) {
-            return new Response(new InvalidCsrfTokenException());
-        }
-
-        // $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $request->get('user')]);
-        $user = $this->getUser();
-
-        if (!$user)
+        if((!$token) || (!$user))
         {
-            throw $this->createNotFoundException();
+            $this->addFlash(
+                'danger',
+                'Accès refusé!'
+                );
+            return $this->redirectToRoute('security_connexion');
         }
 
         if ($user->getToken() === $token)
@@ -198,9 +299,10 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/forgotten-pass", name="forgotten_pass")
+     * @Route("/user/update-pass", name="update_pass")
+     * @IsGranted("ROLE_USER")
      */ 
-    public function forgotten_pass(Request $request, UserPasswordEncoderInterface $encoder, Objectmanager $manager)
+    public function updatePass(Request $request, UserPasswordEncoderInterface $encoder, Objectmanager $manager)
     {
         if($this->getUser() !== NULL)
         {
@@ -235,7 +337,7 @@ class SecurityController extends AbstractController
     
         }
 
-        return $this->render('security/password.html.twig', [
+        return $this->render('security/updatePassword.html.twig', [
             'form' => $form->createView()
         ]);    }
     

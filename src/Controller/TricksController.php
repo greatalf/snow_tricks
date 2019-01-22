@@ -99,13 +99,20 @@ class TricksController extends AbstractController
         * @Route("/tricks/{slug}/edit", name="tricks_edit")
         * @IsGranted("ROLE_USER")
         */
-        public function edit(Figure $figure = NULL, Request $request, ObjectManager $manager)
+        public function edit(Figure $figure = NULL, Request $request, ObjectManager $manager, FigureRepository $repoFig)
         {
+            // $figure = new Figure;
+            $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
+
             $form = $this->createForm(FigureType::class, $figure);
             $form->handleRequest($request);
 
             if($form->isSubmitted() && $form->isValid())
             {
+                // if($figure->getTitle() == NULL)
+                // {
+                //     die('le titre ne peut être nul');
+                // }
                 foreach($figure->getVisuals() as $visual)
                 {                
                     $this->videoUrlConvertissor($visual);

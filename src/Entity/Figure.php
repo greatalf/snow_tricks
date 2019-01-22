@@ -28,15 +28,15 @@ class Figure
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min=3, max=30)
-     * @Assert\NotBlank()
+     * @Assert\Length(min=3, max=20)
+     * @Assert\NotBlank
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\Length(min=3, max=500)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $content;
 

@@ -103,7 +103,7 @@
             <div class="row loop">
                 <div class="col-2 mb-4" style="display:flex; justify-content: space-around; align-items: center;">
                     {% if comment.author.avatar.name is defined %}
-                    <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><img class="avatar-mini" src="{{comment.author.avatar.name }}"></span>
+                    <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><img class="avatar-mini" src="../avatars/{{comment.author.avatar.name }}"></span>
                     {% else %}
                     <span title="{{ comment.author.username }}" data-toggle="popover" data-trigger="hover"><i class="fa fa-user-circle avatar-mini" style="width:50px; font-size:48px"></i></span>
                     {% endif %}

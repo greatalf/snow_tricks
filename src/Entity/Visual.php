@@ -36,7 +36,7 @@ class Visual
     private $caption;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Figure", inversedBy="visuals")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Figure", inversedBy="visuals", cascade="persist")
      * @ORM\JoinColumn(nullable=false)
      */
     private $figure;
