@@ -103,4 +103,18 @@ class Visual
     {
         return self::HEAT[$this->visualKind];
     }
+
+    public function isImage()
+    {
+        $extTable = ['.jpg', '.jpeg', '.png', 'aspx'];
+        $extensionJpgPng = (substr($this->getUrl(), strlen($this->getUrl())-4));
+        $extensionJpeg = (substr($this->getUrl(), strlen($this->getUrl())-5));
+        
+        if(in_array($extensionJpgPng, $extTable) || in_array($extensionJpeg, $extTable))
+        {
+            $this->setVisualKind('0');
+            return true;
+        }
+        return false;
+    }
 }

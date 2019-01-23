@@ -26,7 +26,7 @@ class TricksController extends AbstractController
     * @Route("/tricks/new", name="tricks_create")
     * @IsGranted("ROLE_USER")
     */
-    public function create(Figure $figure = NULL, Request $request, ObjectManager $manager)
+    public function create(Request $request, ObjectManager $manager)
     {        
         $figure = new Figure();        
         
@@ -117,7 +117,7 @@ class TricksController extends AbstractController
                 {                
                     $this->videoUrlConvertissor($visual);
                     
-                    if((!$this->isImage($visual) && (!$this->isVideo($visual))))
+                    if((!$visual->isImage($visual) && (!$this->isVideo($visual))))
                     {
                         $this->addFlash(
                         'danger',
@@ -249,7 +249,7 @@ class TricksController extends AbstractController
                     'figure'             => $figure
                     ]);
                 }   
-dump($this->isHeadVisualValid($figure));
+
                 $figure->setHeadVisual($figure->getHeadVisual());
                
                 $dateModified = (new \Datetime());
@@ -386,21 +386,7 @@ dump($this->isHeadVisualValid($figure));
             return $this->redirectToRoute('tricks_show', [
                     'slug' => $figure->getSlug()
                     ]);
-        }    
-
-    private function isImage(Visual $visual)
-    {
-        $extTable = ['.jpg', '.jpeg', '.png', 'aspx'];
-        $extensionJpgPng = (substr($visual->getUrl(), strlen($visual->getUrl())-4));
-        $extensionJpeg = (substr($visual->getUrl(), strlen($visual->getUrl())-5));
-        
-        if(in_array($extensionJpgPng, $extTable) || in_array($extensionJpeg, $extTable))
-        {
-            $visual->setVisualKind('0');
-            return true;
         }
-        return false;
-    }
 
     private function convertVideoUrl(Visual $visual, $regexPattern, $youtubeORdailymotion)
     {
