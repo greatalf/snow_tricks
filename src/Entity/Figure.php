@@ -256,4 +256,15 @@ class Figure
 
         return $this;
     }
+
+    public function isHeadVisualValid()
+    {
+        $extTable = ['jpg', 'jpeg', 'png', 'aspx'];
+        $typeInfo = new \SplFileInfo($this->getHeadVisual());
+        
+        if(in_array($typeInfo->getExtension(), $extTable) || in_array($typeInfo->getExtension(), $extTable))
+        {
+            return true;
+        }
+    }
 }

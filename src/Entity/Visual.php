@@ -117,4 +117,12 @@ class Visual
         }
         return false;
     }
+
+    public function isVideo()
+    {
+        if($this->getVisualKind() == '1')
+        {
+            return true;
+        }
+    }
 }

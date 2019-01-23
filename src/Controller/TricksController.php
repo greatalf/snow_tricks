@@ -7,6 +7,7 @@ use App\Entity\Figure;
 use App\Entity\Visual;
 use App\Entity\Comment;
 use App\Entity\Category;
+use App\ToolDevice\Slugification;
 use App\Form\FigureType;
 use App\Form\VisualType;
 use App\Form\CommentType;
@@ -42,7 +43,7 @@ class TricksController extends AbstractController
                 //https://cdn.shopify.com/s/files/1/0230/2239/files/Canadian_Bacon_Tim_Eddy_side_Fenelon_large.jpg?1819627745986436554
                 $this->videoUrlConvertissor($visual);
 
-                if((!$this->isImage($visual) && (!$this->isVideo($visual))))
+                if((!$visual->isImage() && (!$visual->isVideo())))
                 {
                     $this->addFlash(
                     'danger',
@@ -57,7 +58,7 @@ class TricksController extends AbstractController
                 $manager->persist($visual);
             }
 
-            if(!$this->isHeadVisualValid($figure))
+            if(!$figure->isHeadVisualValid($figure))
             {
             $this->addFlash(
                 'danger',
@@ -72,7 +73,8 @@ class TricksController extends AbstractController
 
 
             $dateCreate = (new \Datetime());
-            $slug = $this->slugify($figure->getTitle());
+            $slugification = new Slugification;
+            $slug = $slugification->slugify($figure->getTitle());
 
             $figure->setSlug($slug);
             $figure->setContent(nl2br($figure->getContent()));
@@ -117,7 +119,7 @@ class TricksController extends AbstractController
                 {                
                     $this->videoUrlConvertissor($visual);
                     
-                    if((!$visual->isImage($visual) && (!$this->isVideo($visual))))
+                    if((!$visual->isImage() && (!$visual->isVideo())))
                     {
                         $this->addFlash(
                         'danger',
@@ -132,7 +134,7 @@ class TricksController extends AbstractController
                     
                 }
 
-                if(!$this->isHeadVisualValid($figure))
+                if(!$figure->isHeadVisualValid($figure))
                 {
                 $this->addFlash(
                     'danger',
@@ -147,7 +149,8 @@ class TricksController extends AbstractController
                 
                 $dateModified = (new \Datetime());
                 $figure->setContent(nl2br($figure->getContent()));
-                $slug = $this->slugify($figure->getTitle());
+                $slugification = new Slugification;
+                $slug = $slugification->slugify($figure->getTitle());
                 
                 $figure->setSlug($slug);
                 $figure->setModifiedAt($dateModified);
@@ -237,9 +240,8 @@ class TricksController extends AbstractController
 
             if($formEditHeadVisual->isSubmitted())
             {                
-                if(!$this->isHeadVisualValid($figure))
+                if(!$figure->isHeadVisualValid($figure))
                 {
-                    die('isHeadVisualValid nest pas valide');
                     $this->addFlash(
                         'danger',
                     "Cette URL ne présente pas une image valide(jpeg, jpg, png, aspx)"
@@ -311,7 +313,7 @@ class TricksController extends AbstractController
             {
                 $this->videoUrlConvertissor($visual);
                 
-                if((!$this->isImage($visual) && (!$this->isVideo($visual))))
+                if((!$visual->isImage() && (!$visual->isVideo())))
                 {
                     $this->addFlash(
                     'danger',
@@ -427,30 +429,5 @@ class TricksController extends AbstractController
         $this->convertVideoUrl($visual, 'https:\/\/www\.dailymotion\.com\/embed\/video\/',  'dailymotion');
         $this->convertVideoUrl($visual, 'https:\/\/www\.dailymotion\.com\/video\/', 'dailymotion');
         $this->convertVideoUrl($visual, 'https:\/\/dai\.ly\/', 'dailymotion');
-    }
-
-    private function isVideo(Visual $visual)
-    {
-        if($visual->getVisualKind() == '1')
-        {
-            return true;
-        }
-    }
-
-    private function isHeadVisualValid(Figure $figure)
-    {
-        $extTable = ['jpg', 'jpeg', 'png', 'aspx'];
-        $typeInfo = new \SplFileInfo($figure->getHeadVisual());
-        
-        if(in_array($typeInfo->getExtension(), $extTable) || in_array($typeInfo->getExtension(), $extTable))
-        {
-            return true;
-        }
-    }
-
-    public function slugify($string)
-    {
-        return lcfirst(str_replace('\'', '-', (str_replace(' ','-',$string))));
-    }
-    
+    }    
 }

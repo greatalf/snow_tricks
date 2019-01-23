@@ -5,23 +5,23 @@ namespace App\ToolDevice;
 
 class Slugification
 {
-    public function slugify($text)
+    public function slugify($str)
     {
-        $text = strtolower($text);
-        $text = preg_replace('#[^\\pL\d]+#u', '-', $text);
-        $text = trim($text, '-');
-        $text = preg_replace('#[^-\w]+#', '', $text);
+        $str = strtolower($str);
+        $str = preg_replace('#[^\\pL\d]+#u', '-', $str);
+        $str = trim($str, '-');
+        $str = preg_replace('#[^-\w]+#', '', $str);
 
         if (function_exists('iconv'))
         {
-            $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+            $str = iconv('utf-8', 'us-ascii//TRANSLIT', $str);
         }
 
-        if (empty($text))
+        if (empty($str))
         {
             return 'n-a';
         }
 
-        return $text;
+        return $str;
     }
 }
