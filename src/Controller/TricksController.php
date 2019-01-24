@@ -390,7 +390,7 @@ class TricksController extends AbstractController
                     ]);
         }
 
-    private function convertVideoUrl(Visual $visual, $regexPattern, $youtubeORdailymotion)
+    public function convertVideoUrl(Visual $visual, $regexPattern, $youtubeORdailymotion)
     {
         //comparaison de l'url fournie à une url vidéo
         preg_match('#(' . $regexPattern . ')([a-z0-9_-]+)#mi', $visual->getUrl(), $matches);
