@@ -58,6 +58,4 @@ class SecurityControllerTest extends WebTestCase
             ['/tricks/new'],
         ];
     }
-
-
 }

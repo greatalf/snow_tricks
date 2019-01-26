@@ -7,14 +7,15 @@ use App\Entity\Figure;
 use App\Entity\Visual;
 use App\Entity\Comment;
 use App\Entity\Category;
-use App\ToolDevice\Slugification;
 use App\Form\FigureType;
 use App\Form\VisualType;
 use App\Form\CommentType;
 use App\Form\EditVisualType;
 use App\Form\EditHeadVisualType;
+use App\ToolDevice\Slugification;
 use App\Repository\FigureRepository;
 use App\Repository\CommentRepository;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -101,20 +102,22 @@ class TricksController extends AbstractController
         * @Route("/tricks/{slug}/edit", name="tricks_edit")
         * @IsGranted("ROLE_USER")
         */
-        public function edit(Figure $figure = NULL, Request $request, ObjectManager $manager, FigureRepository $repoFig)
+        public function edit(Figure $figure = NULL, Request $request, FigureRepository $repoFig)
         {
             // $figure = new Figure;
-            $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
-
             $form = $this->createForm(FigureType::class, $figure);
             $form->handleRequest($request);
-
+            
+            // dd($figure);
             if($form->isSubmitted() && $form->isValid())
-            {
-                // if($figure->getTitle() == NULL)
-                // {
-                //     die('le titre ne peut être nul');
-                // }
+            { 
+                $manager = $this->getDoctrine()->getManager();
+
+                $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
+                if($form->get('title') == NULL)
+                {
+                    $form->get('title')->addError(new FormError("Le titre ne peut pas être vide"));
+                }
                 foreach($figure->getVisuals() as $visual)
                 {                
                     $this->videoUrlConvertissor($visual);
@@ -154,6 +157,9 @@ class TricksController extends AbstractController
                 
                 $figure->setSlug($slug);
                 $figure->setModifiedAt($dateModified);
+
+                // Pour surmonter le UniqueEntity du titre
+                $manager->merge($figure);
                 
                 $manager->flush();
                 
