@@ -114,10 +114,9 @@ class TricksController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
 
                 $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
-                if($form->get('title') == NULL)
-                {
-                    $form->get('title')->addError(new FormError("Le titre ne peut pas être vide"));
-                }
+                
+                // $form->get('title')->addError(new FormError("Le titre ne peut pas être vide"));
+                
                 foreach($figure->getVisuals() as $visual)
                 {                
                     $this->videoUrlConvertissor($visual);
