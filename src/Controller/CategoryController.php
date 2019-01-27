@@ -15,7 +15,7 @@ class CategoryController extends AbstractController
 {
     /**
      * @Route("admin/categories", name="category")
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_USER")
      */
     public function index(Request $request, ObjectManager $manager)
     {
