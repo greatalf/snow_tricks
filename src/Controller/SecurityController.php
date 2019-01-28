@@ -188,12 +188,12 @@ class SecurityController extends AbstractController
             }
 
             $headers  = 'MIME-Version: 1.0' . "\n";
-     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\n";
-     $headers .= 'Reply-to: Seomeone <adresse@example.com>' . "\n" ;
-     $headers .= 'Return-path: Seomeone <adresse@example.com>' . "\n" ;
-     $headers .= 'From: Seomeone <adresse@example.com>' . "\r\n";
+         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\n";
+         $headers .= 'Reply-to: Seomeone <adresse@example.com>' . "\n" ;
+         $headers .= 'Return-path: Seomeone <adresse@example.com>' . "\n" ;
+         $headers .= 'From: Seomeone <adresse@example.com>' . "\r\n";
 
-            mail($userExist->getEmail(), 'Changement de mot de passe', 'Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
+            $message = mail($userExist->getEmail(), 'Changement de mot de passe', 'Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
                                      Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
                                      LIEN</a> pour le faire', $headers);
 
@@ -207,11 +207,17 @@ class SecurityController extends AbstractController
                                     
             // $mailer->send($message);
 
+            if($message)
+            {
+                $this->addFlash(
+                'success',
+                'Un email de réinitialisation de mot de passe vous a été envoyé à l\'adresse ' .  $userExist->getEmail());
+
+                return $this->redirectToRoute('security_connexion');
+            }
             $this->addFlash(
-            'success',
-            'Un email de réinitialisation de mot de passe vous a été envoyé à l\'adresse ' .  $userExist->getEmail());
-            
-            return $this->redirectToRoute('security_connexion');
+                'danger',
+                'L\'adresse ' .  $userExist->getEmail() . 'n\'existe pas');
         }
 
         return $this->render(
