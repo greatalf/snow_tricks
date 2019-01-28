@@ -187,12 +187,21 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('security_connexion');
             }
 
-            $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
-                        ->setFrom('dev.adm974@gmail.com')
-                        ->setTo($userExist->getEmail())
-                        ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
-                                    Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">LIEN</a> pour le faire',
-                                    'text/html'); 
+            $headers = 'From: dev.adm974@gmail.com' . "\r\n";
+            $headers .= 'MIME-Version: 1.0' . "\r\n";
+            $headers .= 'Content-Type: text/html; charset="iso-8859-1"' . "\r\n";
+
+            mail($userExist->getEmail(), 'Changement de mot de passe', 'Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
+                                     Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
+                                     LIEN</a> pour le faire', $headers);
+
+            // $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
+            //             ->setFrom('dev.adm974@gmail.com')
+            //             ->setTo($userExist->getEmail())
+            //             ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
+            //                         Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
+            //                         LIEN</a> pour le faire', 'text/html'
+            //             ); 
                                     
             $mailer->send($message);
 
