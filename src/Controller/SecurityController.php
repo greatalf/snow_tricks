@@ -203,7 +203,7 @@ class SecurityController extends AbstractController
             //                         LIEN</a> pour le faire', 'text/html'
             //             ); 
                                     
-            $mailer->send($message);
+            // $mailer->send($message);
 
             $this->addFlash(
             'success',
