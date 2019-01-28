@@ -162,7 +162,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/forgotten-password", name="forgotten_password")
      */
-    function forgottenPass(Request $request, \Swift_Mailer $mailer)
+    function forgottenPass(Request $request)
     {
         $user = new User();
         $form = $this->createFormBuilder($user)
