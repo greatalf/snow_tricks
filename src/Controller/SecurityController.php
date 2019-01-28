@@ -187,9 +187,11 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('security_connexion');
             }
 
-            $headers = 'From: dev.adm974@gmail.com' . "\r\n";
-            $headers .= 'MIME-Version: 1.0' . "\r\n";
-            $headers .= 'Content-Type: text/html; charset="iso-8859-1"' . "\r\n";
+            $headers  = 'MIME-Version: 1.0' . "\n";
+     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\n";
+     $headers .= 'Reply-to: Seomeone <adresse@example.com>' . "\n" ;
+     $headers .= 'Return-path: Seomeone <adresse@example.com>' . "\n" ;
+     $headers .= 'From: Seomeone <adresse@example.com>' . "\r\n";
 
             mail($userExist->getEmail(), 'Changement de mot de passe', 'Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
                                      Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
