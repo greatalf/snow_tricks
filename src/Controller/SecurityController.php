@@ -207,7 +207,7 @@ class SecurityController extends AbstractController
                                     
             // $mailer->send($message);
 
-            if($message)
+            if($message !== false)
             {
                 $this->addFlash(
                 'success',
