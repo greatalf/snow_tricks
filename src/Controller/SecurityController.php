@@ -187,44 +187,21 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('security_connexion');
             }
 
-            $headers  = 'MIME-Version: 1.0' . "\n";
-         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\n";
-         $headers .= 'Reply-to: Seomeone <adresse@example.com>' . "\n" ;
-         $headers .= 'Return-path: Seomeone <adresse@example.com>' . "\n" ;
-         $headers .= 'From: Seomeone <adresse@example.com>' . "\r\n";
-
-            $message = mail($userExist->getEmail(), 'Changement de mot de passe', 'Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
-                                     Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
-                                     LIEN</a> pour le faire', $headers);
-
-            // $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
-            //             ->setFrom('dev.adm974@gmail.com')
-            //             ->setTo($userExist->getEmail())
-            //             ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
-            //                         Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
-            //                         LIEN</a> pour le faire', 'text/html'
-            //             ); 
+            $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
+                        ->setFrom('dev.adm974@gmail.com')
+                        ->setTo($userExist->getEmail())
+                        ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
+                                    Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
+                                    LIEN</a> pour le faire', 'text/html'
+                        ); 
                                     
-            // $mailer->send($message);
-
-            if($message !== false)
-            {
-                $this->addFlash(
-                'success',
-                'Un email de réinitialisation de mot de passe vous a été envoyé à l\'adresse ' .  $userExist->getEmail());
-
-                return $this->redirectToRoute('security_connexion');
-            }
-            $this->addFlash(
-                'danger',
-                'L\'adresse ' .  $userExist->getEmail() . 'n\'existe pas');
+            $mailer->send($message);
         }
 
         return $this->render(
             'security/updatePassword.html.twig', [
                 'form' => $form->createView(),
-            ]
-        );
+                ]);
     }
 
     /**
