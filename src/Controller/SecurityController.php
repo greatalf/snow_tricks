@@ -172,9 +172,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted())
         {
-            $user = $form->getData();
-            $email = $user->getEmail();
-
+            $email = $form->getData();            
             $repository = $this->getDoctrine()->getRepository(User::class);
             $userExist = $repository->findOneBy(['email' => $email]);
 
