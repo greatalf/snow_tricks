@@ -188,13 +188,13 @@ class SecurityController extends AbstractController
             }
 
             //Créer le transport
-            $transport = Swift_SmtpTransport::newInstance('smtp.mailgun.org', 587) 
+            $transport = \Swift_SmtpTransport::newInstance('smtp.mailgun.org', 587) 
                         ->setUsername('postmaster@sandbox0171cc4c4fea44a09285cb3b9ce251d4.mailgun.org')
                         ->setPassword('8cd7aa37d2687b068691a4ce6b1fee46-c8c889c9-e71e25c6')
             ; 
 
             // Créer le mailer en utilisant votre transport créé
-            $mailer = Swift_Mailer::newInstance($transport);
+            $mailer = \Swift_Mailer::newInstance($transport);
 
             // Créer un message
             $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
