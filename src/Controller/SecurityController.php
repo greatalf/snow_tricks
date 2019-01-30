@@ -164,8 +164,8 @@ class SecurityController extends AbstractController
      */
     function forgottenPass(Request $request)
     {
-        $user = new User();
-        $form = $this->createFormBuilder($user)
+        //$user = new User();
+        $form = $this->createFormBuilder()
             ->add('email', EmailType::class)
             ->getForm();
 
