@@ -186,7 +186,7 @@ class SecurityController extends AbstractController
             }
 
             //Créer le transport
-            $transport = (new \Swift_SmtpTransport('smtp.mailgun.org', 587)) 
+            $transport = (new \Swift_SmtpTransport('sandbox0171cc4c4fea44a09285cb3b9ce251d4.mailgun.org', 587)) 
                         ->setUsername('postmaster@sandbox0171cc4c4fea44a09285cb3b9ce251d4.mailgun.org')
                         ->setPassword('azertyuiop%')
             ; 
