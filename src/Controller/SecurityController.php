@@ -172,12 +172,10 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted())
         {
-            $user = $form->getData();
-            $email = $user->getEmail();
-
+            $email = $form->getData();
             $repository = $this->getDoctrine()->getRepository(User::class);
             $userExist = $repository->findOneBy(['email' => $email]);
-
+                  
             if(!$userExist)
             {
                 $this->addFlash(
@@ -191,7 +189,7 @@ class SecurityController extends AbstractController
             $transport = (new \Swift_SmtpTransport('smtp.mailgun.org', 587)) 
                         ->setUsername('postmaster@sandbox0171cc4c4fea44a09285cb3b9ce251d4.mailgun.org')
                         ->setPassword('8cd7aa37d2687b068691a4ce6b1fee46-c8c889c9-e71e25c6')
-            ; 
+            ;
 
             // Créer le mailer en utilisant votre transport créé
             $mailer = (new \Swift_Mailer($transport));
@@ -207,6 +205,15 @@ class SecurityController extends AbstractController
                           
             // Envoyer le message
             $mailer->send($message);
+
+            if($mailer->send($message) == true)
+            {
+                $this->addFlash(
+                    'success',
+                    'Un mail de réinitialisation de mot de passe vous a été envoyé'
+                    );
+                    return $this->redirectToRoute('security_connexion');
+            }
         }
 
         return $this->render(
