@@ -66,7 +66,7 @@ class SecurityController extends AbstractController
             $message = (new \Swift_Message('Validation de votre inscription!'))
             ->setFrom('dev.adm974@gmail.com')
             ->setTo('dev.adm974@gmail.com')
-            ->setBody('<strong><u>Email appartenant à ' . $user->getEmail() . '</u></strong> "\n\r"
+            ->setBody('<strong><u>Email appartenant à ' . $user->getEmail() . '</u></strong><br>
                         Bravo <strong>' . $user->getUsername() . '</strong>, votre inscription a été prise en compte.
                         Cliquez sur le lien suivant pour activer votre compte : 
                         <a href="https://snow-tricks.herokuapp.com/confirm?user=' . $user->getId() . '&token=' . $token . '">LIEN</a>', 'text/html');
@@ -86,9 +86,8 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/admin/profil/edit", name="security_edit_profil")
+     * @Route("/user/profil/edit", name="security_edit_profil")
      * @IsGranted("ROLE_USER")
-     * 
      */
     public function profil(Request $request, Objectmanager $manager)
     {
@@ -127,6 +126,8 @@ class SecurityController extends AbstractController
                 'success',
                 'Votre profil a bien été mis à jour'
             );
+
+            dd($_SESSION);
             
             return $this->redirectToRoute('security_admin');
         }
@@ -138,7 +139,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("admin/account/password-update", name="security_update_password")
+     * @Route("user/account/password-update", name="security_update_password")
      * @IsGranted("ROLE_USER")
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder, Objectmanager $manager)
@@ -218,7 +219,7 @@ class SecurityController extends AbstractController
                         ->setFrom(['dev.adm974@gmail.com' => 'No Reply'])
                         ->setTo('dev.adm974@gmail.com')
                         ->setBody('Bonjour <strong>' . $userExist->getUsername() . '</strong>, votre mot de passe peut être réinitialisé.
-                                    Cliquez sur le lien suivant pour <a href="https://snow-tricks.herokuapp.com//reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
+                                    Cliquez sur le lien suivant pour <a href="https://snow-tricks.herokuapp.com/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
                                     réinitialiser votre mot de passe</a>', 'text/html'
                         ); 
                           
