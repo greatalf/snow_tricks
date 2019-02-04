@@ -188,9 +188,9 @@ class SecurityController extends AbstractController
             }
 
             //Créer le transport
-            $transport = (new \Swift_SmtpTransport('smtp.mailgun.org', 25)) 
-                        ->setUsername('postmaster@sandboxe73d225fdc4845d68e2da92f1e3ed087.mailgun.org')
-                        ->setPassword('2e6fc7ab9cd396f64d77d8ee29f57bdf-c8c889c9-fd81e6e3')
+            $transport = (new \Swift_SmtpTransport('smtp.mailtrap.io', 25)) 
+                        ->setUsername('ac5a4c106705b8')
+                        ->setPassword('023d3e7d1f62e3')
             ;
 
             // Créer le mailer en utilisant votre transport créé
