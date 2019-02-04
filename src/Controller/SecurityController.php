@@ -188,18 +188,22 @@ class SecurityController extends AbstractController
             }
 
             //Créer le transport
-            $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 25)) 
+            $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls')) 
                         ->setUsername('dev.adm974@gmail.com')
                         ->setPassword('azertyuiop%')
-            ;
+                        ->setStreamOptions(array(
+                            'ssl' => array(
+                            'allow_self_signed' => true, 
+                            'verify_peer' => false)))
+                            ;
 
             // Créer le mailer en utilisant votre transport créé
             $mailer = (new \Swift_Mailer($transport));
 
             // Créer un message
             $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
-                        ->setFrom('dev.adm974@gmail.com')
-                        ->setTo($userExist->getEmail())
+                        ->setFrom(['dev.adm974@gmail.com' => 'No Reply'])
+                        ->setTo([$userExist->getEmail() => 'Recipient'])
                         ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
                                     Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
                                     LIEN</a> pour le faire', 'text/html'
