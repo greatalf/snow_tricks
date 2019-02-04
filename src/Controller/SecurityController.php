@@ -127,7 +127,8 @@ class SecurityController extends AbstractController
                 'Votre profil a bien été mis à jour'
             );
 
-            dd($_SESSION);
+            var_dump($_SESSION);
+            die();
             
             return $this->redirectToRoute('security_admin');
         }
