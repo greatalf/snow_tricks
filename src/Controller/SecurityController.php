@@ -188,9 +188,9 @@ class SecurityController extends AbstractController
             }
 
             //Créer le transport
-            $transport = (new \Swift_SmtpTransport('smtp.mailtrap.io', 25)) 
-                        ->setUsername('ac5a4c106705b8')
-                        ->setPassword('023d3e7d1f62e3')
+            $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 25)) 
+                        ->setUsername('dev.adm974@gmail.com')
+                        ->setPassword('azertyuiop%')
             ;
 
             // Créer le mailer en utilisant votre transport créé
@@ -206,9 +206,9 @@ class SecurityController extends AbstractController
                         ); 
                           
             // Envoyer le message
-            $mailer->send($message);
+            $message_is_send = $mailer->send($message);
 
-            if($mailer->send($message) == true)
+            if($message_is_send == true)
             {
                 $this->addFlash(
                     'success',
