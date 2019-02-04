@@ -63,12 +63,13 @@ class SecurityController extends AbstractController
             // Créer le mailer en utilisant votre transport créé
             $mailer = (new \Swift_Mailer($transport));
             
-            $message = (new \Swift_Message('Hello Email'))
+            $message = (new \Swift_Message('Validation de votre inscription!'))
             ->setFrom('dev.adm974@gmail.com')
             ->setTo('dev.adm974@gmail.com')
-            ->setBody('Bravo ' . $user->getUsername() . ', votre inscription a été prise en compte.
-                        Cliquez sur le lien suivant pour activer votre inscription : 
-                        <a href="http://localhost:8000/confirm?user=' . $user->getId() . '&token=' . $token . '">LIEN</a>', 'text/html');
+            ->setBody('<strong><u>Email appartenant à ' . $user->getEmail() . '</u></strong> "\n\r"
+                        Bravo <strong>' . $user->getUsername() . '</strong>, votre inscription a été prise en compte.
+                        Cliquez sur le lien suivant pour activer votre compte : 
+                        <a href="https://snow-tricks.herokuapp.com/confirm?user=' . $user->getId() . '&token=' . $token . '">LIEN</a>', 'text/html');
                 
                 $mailer->send($message);
 
@@ -216,9 +217,9 @@ class SecurityController extends AbstractController
             $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
                         ->setFrom(['dev.adm974@gmail.com' => 'No Reply'])
                         ->setTo('dev.adm974@gmail.com')
-                        ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
-                                    Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
-                                    LIEN</a> pour le faire', 'text/html'
+                        ->setBody('Bonjour <strong>' . $userExist->getUsername() . '</strong>, votre mot de passe peut être réinitialisé.
+                                    Cliquez sur le lien suivant pour <a href="https://snow-tricks.herokuapp.com//reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
+                                    réinitialiser votre mot de passe</a>', 'text/html'
                         ); 
                           
             // Envoyer le message
@@ -232,6 +233,11 @@ class SecurityController extends AbstractController
                     );
                     return $this->redirectToRoute('security_connexion');
             }
+            $this->addFlash(
+                    'danger',
+                    'Un problème est survenu lors de l\'envoie de l\'email'
+                    );
+            return $this->redirectToRoute('security_connexion');
         }
 
         return $this->render(
