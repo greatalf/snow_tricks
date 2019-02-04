@@ -187,10 +187,10 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('security_connexion');
             }
 
-            //Créer le transport
-            $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls')) 
-                        ->setUsername('dev.adm974@gmail.com')
-                        ->setPassword('azertyuiop%')
+            //Créer le transport MAILER_URL=email-smtp.eu-west-1.amazonaws.com:25?encryption=tls&username=AKIAJR7QAAETHWZ4Y5UA&password=BAgKGucr0X3DF7RFYQsf3Q/rRfYAFgunZ+Nk7d94sDUP
+            $transport = (new \Swift_SmtpTransport('email-smtp.eu-west-1.amazonaws.com', 25, 'tls')) 
+                        ->setUsername('AKIAJR7QAAETHWZ4Y5UA')
+                        ->setPassword('BAgKGucr0X3DF7RFYQsf3Q/rRfYAFgunZ+Nk7d94sDUP')
                         ->setStreamOptions(array(
                             'ssl' => array(
                             'allow_self_signed' => true, 
