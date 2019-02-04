@@ -50,10 +50,22 @@ class SecurityController extends AbstractController
 
             $manager->persist($user);
             $manager->flush();
+
+            $transport = (new \Swift_SmtpTransport('email-smtp.eu-west-1.amazonaws.com', 25, 'tls')) 
+                        ->setUsername('AKIAJR7QAAETHWZ4Y5UA')
+                        ->setPassword('BAgKGucr0X3DF7RFYQsf3Q/rRfYAFgunZ+Nk7d94sDUP')
+                        ->setStreamOptions(array(
+                            'ssl' => array(
+                            'allow_self_signed' => true, 
+                            'verify_peer' => false)))
+                            ;
+
+            // Créer le mailer en utilisant votre transport créé
+            $mailer = (new \Swift_Mailer($transport));
             
             $message = (new \Swift_Message('Hello Email'))
             ->setFrom('dev.adm974@gmail.com')
-            ->setTo($user->getEmail())
+            ->setTo('dev.adm974@gmail.com')
             ->setBody('Bravo ' . $user->getUsername() . ', votre inscription a été prise en compte.
                         Cliquez sur le lien suivant pour activer votre inscription : 
                         <a href="http://localhost:8000/confirm?user=' . $user->getId() . '&token=' . $token . '">LIEN</a>', 'text/html');
@@ -203,7 +215,7 @@ class SecurityController extends AbstractController
             // Créer un message
             $message = (new \Swift_Message('Réinitialisation de votre mot de passe'))
                         ->setFrom(['dev.adm974@gmail.com' => 'No Reply'])
-                        ->setTo([$userExist->getEmail() => 'Recipient'])
+                        ->setTo('dev.adm974@gmail.com')
                         ->setBody('Bonjour ' . $userExist->getUsername() . ', votre mot de passe peut être réinitialisé.
                                     Cliquez sur ce <a href="http://localhost:8000/reset-password?user=' . $userExist->getId() . '&token=' . $userExist->getToken() . '">
                                     LIEN</a> pour le faire', 'text/html'
