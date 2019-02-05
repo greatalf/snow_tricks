@@ -389,6 +389,12 @@ class SecurityController extends AbstractController
             );
             return $this->redirectToRoute('home');
         }
+
+        var_dump($this->get('session')->all());
+        die();
+
+        $this->serialise->get('session');
+
         $error = $utils->getLastAuthenticationError();
         $username = $utils->getLastUsername();
 
