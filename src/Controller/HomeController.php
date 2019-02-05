@@ -19,7 +19,7 @@ class HomeController extends AbstractController
 
         $sessionVars = $this->get('session')->all();
         $serializer = new Serializer;
-        var_dump($serializer->deserialize($sessionVars, Session::class, 'json'));
+        var_dump($serializer->deserialize($sessionVars, Session::class, 'xml'));
         // die();
 
         return $this->render('tricks/home.html.twig', ['figures' => $figures]);
