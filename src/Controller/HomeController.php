@@ -18,7 +18,7 @@ class HomeController extends AbstractController
     {        
         $figures = $repo->findAll();
 
-        $encoders = ['json' => new JsonEncoder()];
+        $encoders = 'json';
         $sessionVars = $this->get('session')->all();
         $serializer = new Serializer;
         var_dump($serializer->deserialize($sessionVars, Session::class, $encoders));
