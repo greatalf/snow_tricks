@@ -96,289 +96,241 @@ class TricksController extends AbstractController
         return $this->render('tricks/create.html.twig', [
             'form' => $form->createView()
             ]);
-        }
+    }
         
-        /**
-        * @Route("/tricks/{slug}/edit", name="tricks_edit")
-        * @IsGranted("ROLE_USER")
-        */
-        public function edit(Figure $figure = NULL, Request $request, FigureRepository $repoFig)
-        {
-            // $figure = new Figure;
-            $form = $this->createForm(FigureType::class, $figure);
-            $form->handleRequest($request);
-            
-            // dd($figure);
-            if($form->isSubmitted() && $form->isValid())
-            { 
-                $manager = $this->getDoctrine()->getManager();
+    /**
+    * @Route("/tricks/{slug}/edit", name="tricks_edit")
+    * @IsGranted("ROLE_USER")
+    */
+    public function edit(Figure $figure = NULL, Request $request, FigureRepository $repoFig)
+    {
+        // $figure = new Figure;
+        $form = $this->createForm(FigureType::class, $figure);
+        $form->handleRequest($request);
+        
+        // dd($figure);
+        if($form->isSubmitted() && $form->isValid())
+        { 
+            $manager = $this->getDoctrine()->getManager();
 
-                $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
-                
-                // $form->get('title')->addError(new FormError("Le titre ne peut pas être vide"));
-                
-                foreach($figure->getVisuals() as $visual)
-                {                
-                    $this->videoUrlConvertissor($visual);
-                    
-                    if((!$visual->isImage() && (!$visual->isVideo())))
-                    {
-                        $this->addFlash(
-                        'danger',
-                        'Une des URLs remplies n\'est ni une image(jpeg, jpg, png, aspx), ni une vidéo Youtube ou Dailymotion'
-                    );
-                        return $this->redirectToRoute('tricks_edit', [
-                            'slug' => $figure->getSlug()
-                            ]);
-                        }
-                    $visual->setFigure($figure);
-                    $manager->persist($visual);
-                    
-                }
-
-                if(!$figure->isHeadVisualValid($figure))
-                {
-                $this->addFlash(
-                    'danger',
-                    "L'URL de l'image d'affiche n'est pas une image valide(jpeg, jpg, png, aspx)"
-                );
-                return $this->redirectToRoute('tricks_edit', [
-                    'slug' => $figure->getSlug()
-                    ]);
-                }   
-
-                $figure->setHeadVisual($figure->getHeadVisual());
-                
-                $dateModified = (new \Datetime());
-                $figure->setContent(nl2br($figure->getContent()));
-                $slugification = new Slugification;
-                $slug = $slugification->slugify($figure->getTitle());
-                
-                $figure->setSlug($slug);
-                $figure->setModifiedAt($dateModified);
-
-                // Pour surmonter le UniqueEntity du titre
-                $manager->merge($figure);
-                
-                $manager->flush();
-                
-                $this->addFlash(
-                    'success',
-                    'La figure ' . $figure->getTitle() . ' a bien été modifiée!'
-                );
-
-                return $this->redirectToRoute('tricks_show', [
-                    'slug' => $figure->getSlug()
-                ]);
-            }
-            
-            return $this->render('tricks/edit.html.twig', [
-                'form'   => $form->createView(),
-                'figure' => $figure
-                ]);
-        }
-
-        /**
-         * @Route("/tricks/{slug}/delete", name="tricks_delete")
-         * @IsGranted("ROLE_USER")
-         */    
-        public function delete(Figure $figure, ObjectManager $manager)
-        {     
-            $manager->remove($figure);
-            $manager->flush();
-
-            $this->addFlash(
-                        'success',
-                        'La figure a bien été supprimée'
-                        );
-
-            return $this->redirectToRoute('home', ['figure' => $figure]);
-        }
-
-        /**
-         * @Route("/tricks/{slug}", name="tricks_show")
-         */
-        public function show(Figure $figure = null, Comment $comment = null, ObjectManager $manager, Request $request, CommentRepository $repoCom, FigureRepository $repoFig)
-        {     
-            $comment = new Comment();
-            $form = $this->createForm(CommentType::class, $comment);
-            
             $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
-            $form->handleRequest($request);
             
-            if($form->isSubmitted() && $form->isValid())
-            {            
-                if($this->getUser() == null)
-                {
-                    return $this->redirectToRoute('security_connexion');
-                }
-
-                $comment->setCreatedAt(new \Datetime())
-                        ->setContent($comment->getContent())
-                        ->setFigure($figure)
-                        ->setAuthor($this->getUser());
-
-                $manager->persist($comment);
-                $manager->flush();
-                
-                return $this->redirectToRoute('tricks_show', ['slug' => $figure->getSlug()]);
-            }
-            $limit = $this->getParameter('comment_per_page');
-            $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], ['createdAt' => 'DESC'], count($figure->getComments())) : '';
-
-            return $this->render('tricks/show.html.twig', [
-                'figure' => $figure,
-                'comments' => $comments,
-                'limitPerPage' => $this->getParameter('comment_per_page'),
-                'CommentForm' => $form->createView()
-            ]);
-        }
-        
-        /**
-        * @Route("/tricks/{slug}/editHeadVisual", name="head_visual_edit")
-        * @IsGranted("ROLE_USER")
-        */
-        public function editHeadVisual(Figure $figure, Request $request, ObjectManager $manager)
-        {
-            $formEditHeadVisual = $this->createForm(EditHeadVisualType::class, $figure);
-            $formEditHeadVisual->handleRequest($request);
-
-            if($formEditHeadVisual->isSubmitted())
+            // $form->get('title')->addError(new FormError("Le titre ne peut pas être vide"));
+            
+            foreach($figure->getVisuals() as $visual)
             {                
-                if(!$figure->isHeadVisualValid($figure))
-                {
-                    $this->addFlash(
-                        'danger',
-                    "Cette URL ne présente pas une image valide(jpeg, jpg, png, aspx)"
-                    );
-                    return $this->render('security/editHeadVisual.html.twig', [
-                    'formEditHeadVisual' => $formEditHeadVisual->createView(),
-                    'figure'             => $figure
-                    ]);
-                }   
-
-                $figure->setHeadVisual($figure->getHeadVisual());
-               
-                $dateModified = (new \Datetime());
-                $figure->setModifiedAt($dateModified);
-
-                $manager->flush();
-
-                $this->addFlash(
-                    'success',
-                    'L\'image à la une de la figure ' . $figure->getTitle() . ' a bien été modifiée!'
-                );
-        
-                return $this->redirectToRoute('tricks_show', [
-                    'slug' => $figure->getSlug()
-                    ]);
-                }
-            return $this->render('security/editHeadVisual.html.twig', [
-            'formEditHeadVisual'   => $formEditHeadVisual->createView(),
-            'figure' => $figure
-                ]);
-        }
-
-
-        /**
-         * @Route("/tricks/{slug}/deleteHeadVisual", name="head_visual_delete")
-         * @IsGranted("ROLE_USER")
-         */    
-        public function deleteHeadVisual(Figure $figure, ObjectManager $manager)
-        {     
-            $figure->setHeadVisual('https://printablefreecoloring.com/image/transportation/drawing-snowboard-2.png');
-
-            $dateModified = (new \Datetime());
-            $figure->setModifiedAt($dateModified);
-
-            $manager->flush();
-
-            $this->addFlash(
-                        'success',
-                        'L\'image à la une a bien été supprimée et remplacée par une image par défaut'
-                    );
-
-            return $this->redirectToRoute('tricks_show', [
-                    'slug' => $figure->getSlug()
-                    ]);
-        }
-
-        /**
-        * @Route("/tricks/{slug}/editVisual/{id}", name="visual_edit")
-        * @IsGranted("ROLE_USER")
-        */
-        public function editVisual(Visual $visual = null, FigureRepository $repo, Request $request, ObjectManager $manager)
-        {
-            $formEditVisual = $this->createForm(VisualType::class, $visual);
-            $formEditVisual->handleRequest($request);
-
-            $figure = $repo->findOneById($visual->getFigure());
-            
-            if($formEditVisual->isSubmitted() && $formEditVisual->isValid())
-            {
                 $this->videoUrlConvertissor($visual);
                 
                 if((!$visual->isImage() && (!$visual->isVideo())))
                 {
                     $this->addFlash(
                     'danger',
-                    'L\'URL ne correspond ni à une image(jpeg, jpg, png, aspx), ni à une vidéo Youtube ou Dailymotion'
-                        );
-
-                    return $this->redirectToRoute('visual_edit', [
-                        'id' => $figure->getId()
+                    'Une des URLs remplies n\'est ni une image(jpeg, jpg, png, aspx), ni une vidéo Youtube ou Dailymotion'
+                );
+                    return $this->redirectToRoute('tricks_edit', [
+                        'slug' => $figure->getSlug()
                         ]);
-                }
-
+                    }
                 $visual->setFigure($figure);
+                $manager->persist($visual);
+                
+            }
 
-                $dateModified = (new \Datetime());
-                $figure->setModifiedAt($dateModified);
+            if(!$figure->isHeadVisualValid($figure))
+            {
+            $this->addFlash(
+                'danger',
+                "L'URL de l'image d'affiche n'est pas une image valide(jpeg, jpg, png, aspx)"
+            );
+            return $this->redirectToRoute('tricks_edit', [
+                'slug' => $figure->getSlug()
+                ]);
+            }   
 
-                $manager->flush();
+            $figure->setHeadVisual($figure->getHeadVisual());
+            
+            $dateModified = (new \Datetime());
+            $figure->setContent(nl2br($figure->getContent()));
+            $slugification = new Slugification;
+            $slug = $slugification->slugify($figure->getTitle());
+            
+            $figure->setSlug($slug);
+            $figure->setModifiedAt($dateModified);
 
-                $this->addFlash(
-                    'success',
-                    'Le média de la figure ' . $figure->getTitle() . ' a bien été modifiée!'
-                    );
+            // Pour surmonter le UniqueEntity du titre
+            $manager->merge($figure);
+            
+            $manager->flush();
+            
+            $this->addFlash(
+                'success',
+                'La figure ' . $figure->getTitle() . ' a bien été modifiée!'
+            );
+
+            return $this->redirectToRoute('tricks_show', [
+                'slug' => $figure->getSlug()
+            ]);
+        }
         
-                return $this->redirectToRoute('tricks_show', [
-                    'slug' => $figure->getSlug()
+        return $this->render('tricks/edit.html.twig', [
+            'form'   => $form->createView(),
+            'figure' => $figure
+            ]);
+    }
+
+    /**
+     * @Route("/tricks/{slug}/delete", name="tricks_delete")
+     * @IsGranted("ROLE_USER")
+     */    
+    public function delete(Figure $figure, ObjectManager $manager)
+    {     
+        $manager->remove($figure);
+        $manager->flush();
+
+        $this->addFlash(
+                    'success',
+                    'La figure a bien été supprimée'
+                    );
+
+        return $this->redirectToRoute('home', ['figure' => $figure]);
+    }
+
+    /**
+     * @Route("/tricks/{slug}", name="tricks_show")
+     */
+    public function show(Figure $figure = null, Comment $comment = null, ObjectManager $manager, Request $request, CommentRepository $repoCom, FigureRepository $repoFig)
+    {     
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        
+        $figure = $repoFig->findOneBy(['slug' => $figure->getSlug()]);
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid())
+        {            
+            if($this->getUser() == null)
+            {
+                return $this->redirectToRoute('security_connexion');
+            }
+
+            $comment->setCreatedAt(new \Datetime())
+                    ->setContent($comment->getContent())
+                    ->setFigure($figure)
+                    ->setAuthor($this->getUser());
+
+            $manager->persist($comment);
+            $manager->flush();
+            
+            return $this->redirectToRoute('tricks_show', ['slug' => $figure->getSlug()]);
+        }
+        $limit = $this->getParameter('comment_per_page');
+        $comments = ($figure != null) ? $repoCom->findBy(['figure' => $figure->getId()], ['createdAt' => 'DESC'], count($figure->getComments())) : '';
+
+        return $this->render('tricks/show.html.twig', [
+            'figure' => $figure,
+            'comments' => $comments,
+            'limitPerPage' => $this->getParameter('comment_per_page'),
+            'CommentForm' => $form->createView()
+        ]);
+    }
+    
+    /**
+    * @Route("/tricks/{slug}/editHeadVisual", name="head_visual_edit")
+    * @IsGranted("ROLE_USER")
+    */
+    public function editHeadVisual(Figure $figure, Request $request, ObjectManager $manager)
+    {
+        $formEditHeadVisual = $this->createForm(EditHeadVisualType::class, $figure);
+        $formEditHeadVisual->handleRequest($request);
+
+        if($formEditHeadVisual->isSubmitted())
+        {                
+            if(!$figure->isHeadVisualValid($figure))
+            {
+                $this->addFlash(
+                    'danger',
+                "Cette URL ne présente pas une image valide(jpeg, jpg, png, aspx)"
+                );
+                return $this->render('security/editHeadVisual.html.twig', [
+                'formEditHeadVisual' => $formEditHeadVisual->createView(),
+                'figure'             => $figure
+                ]);
+            }   
+
+            $figure->setHeadVisual($figure->getHeadVisual());
+            
+            $dateModified = (new \Datetime());
+            $figure->setModifiedAt($dateModified);
+
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'L\'image à la une de la figure ' . $figure->getTitle() . ' a bien été modifiée!'
+            );
+    
+            return $this->redirectToRoute('tricks_show', [
+                'slug' => $figure->getSlug()
+                ]);
+            }
+        return $this->render('security/editHeadVisual.html.twig', [
+        'formEditHeadVisual'   => $formEditHeadVisual->createView(),
+        'figure' => $figure
+            ]);
+    }
+
+
+    /**
+     * @Route("/tricks/{slug}/deleteHeadVisual", name="head_visual_delete")
+     * @IsGranted("ROLE_USER")
+     */    
+    public function deleteHeadVisual(Figure $figure, ObjectManager $manager)
+    {     
+        $figure->setHeadVisual('https://printablefreecoloring.com/image/transportation/drawing-snowboard-2.png');
+
+        $dateModified = (new \Datetime());
+        $figure->setModifiedAt($dateModified);
+
+        $manager->flush();
+
+        $this->addFlash(
+                    'success',
+                    'L\'image à la une a bien été supprimée et remplacée par une image par défaut'
+                );
+
+        return $this->redirectToRoute('tricks_show', [
+                'slug' => $figure->getSlug()
+                ]);
+    }
+
+    /**
+    * @Route("/tricks/{slug}/editVisual/{id}", name="visual_edit")
+    * @IsGranted("ROLE_USER")
+    */
+    public function editVisual(Visual $visual = null, FigureRepository $repo, Request $request, ObjectManager $manager)
+    {
+        $formEditVisual = $this->createForm(VisualType::class, $visual);
+        $formEditVisual->handleRequest($request);
+
+        $figure = $repo->findOneById($visual->getFigure());
+        
+        if($formEditVisual->isSubmitted() && $formEditVisual->isValid())
+        {
+            $this->videoUrlConvertissor($visual);
+            
+            if((!$visual->isImage() && (!$visual->isVideo())))
+            {
+                $this->addFlash(
+                'danger',
+                'L\'URL ne correspond ni à une image(jpeg, jpg, png, aspx), ni à une vidéo Youtube ou Dailymotion'
+                    );
+
+                return $this->redirectToRoute('visual_edit', [
+                    'id' => $figure->getId()
                     ]);
             }
 
-            return $this->render('security/editVisual.html.twig', [
-                'formEditVisual'   => $formEditVisual->createView(),
-                'visual' => $visual,
-                'figure' => $figure
-                ]);
-        }
-
-        /**
-        * @Route("/tricks/{slug}/deleteVisual/{id}", name="visual_delete")
-        * @IsGranted("ROLE_USER")
-        */
-        public function deleteVisual(Visual $visual = null, FigureRepository $repo, ObjectManager $manager)
-        {            
-            if($visual == NULL)
-            {
-                $this->addFlash(
-                    'success',
-                    'Le média n\'existe pas'
-                );                
-                return $this->render('security/404.html.twig');
-            }
-            $figure = $repo->findOneById($visual->getFigure());
-            if($figure == NULL)
-            {
-                $this->addFlash(
-                    'success',
-                    'Le média n\'existe pas'
-                );                
-                return $this->render('404.html.twig');
-            }               
-                
-            $manager->remove($visual);
+            $visual->setFigure($figure);
 
             $dateModified = (new \Datetime());
             $figure->setModifiedAt($dateModified);
@@ -386,14 +338,62 @@ class TricksController extends AbstractController
             $manager->flush();
 
             $this->addFlash(
-                        'success',
-                        'Le média de la figure a bien été supprimé'
-                    );
-
+                'success',
+                'Le média de la figure ' . $figure->getTitle() . ' a bien été modifiée!'
+                );
+    
             return $this->redirectToRoute('tricks_show', [
-                    'slug' => $figure->getSlug()
-                    ]);
+                'slug' => $figure->getSlug()
+                ]);
         }
+
+        return $this->render('security/editVisual.html.twig', [
+            'formEditVisual'   => $formEditVisual->createView(),
+            'visual' => $visual,
+            'figure' => $figure
+            ]);
+    }
+
+    /**
+    * @Route("/tricks/{slug}/deleteVisual/{id}", name="visual_delete")
+    * @IsGranted("ROLE_USER")
+    */
+    public function deleteVisual(Visual $visual = null, FigureRepository $repo, ObjectManager $manager)
+    {            
+        if($visual == NULL)
+        {
+            $this->addFlash(
+                'success',
+                'Le média n\'existe pas'
+            );                
+            return $this->render('security/404.html.twig');
+        }
+        $figure = $repo->findOneById($visual->getFigure());
+        if($figure == NULL)
+        {
+            $this->addFlash(
+                'success',
+                'Le média n\'existe pas'
+            );                
+            return $this->render('404.html.twig');
+        }               
+            
+        $manager->remove($visual);
+
+        $dateModified = (new \Datetime());
+        $figure->setModifiedAt($dateModified);
+
+        $manager->flush();
+
+        $this->addFlash(
+                    'success',
+                    'Le média de la figure a bien été supprimé'
+                );
+
+        return $this->redirectToRoute('tricks_show', [
+                'slug' => $figure->getSlug()
+                ]);
+    }
 
     public function convertVideoUrl(Visual $visual, $regexPattern, $youtubeORdailymotion)
     {

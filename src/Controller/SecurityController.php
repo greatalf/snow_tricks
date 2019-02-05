@@ -102,7 +102,7 @@ class SecurityController extends AbstractController
             $user = $form->getData();
             
             $avatar = $user->getAvatar();
-            $file = $user->getAvatar()->getFile();
+            $file = $avatar->getFile() ?? NULL;
             
             if($file !== NULL)
             {                
