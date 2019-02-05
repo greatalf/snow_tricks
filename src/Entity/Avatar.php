@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AvatarRepository")
  */
-class Avatar
+class Avatar implements \Serializable
 {
     /**
      * @ORM\Id()
@@ -28,6 +28,27 @@ class Avatar
      * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="avatar")
      */
     private $user;
+
+    //Because of this error : "Serialization of 'Symfony\Component\HttpFoundation\File\UploadedFile' is not allowed" => have to implement \Serializable
+    public function serialize()
+    {
+        return serialize(array(
+          $this->id,
+          $this->name,
+          $this->user
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+          $this->id,
+          $this->name,
+          $this->user
+            ) = unserialize($serialized);
+    }
+
+
 
     public function getId(): ?int
     {

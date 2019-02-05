@@ -106,10 +106,6 @@ class SecurityController extends AbstractController
             
             if($file !== NULL)
             {                
-                $manager->remove($avatar);
-                $manager->flush();
-                $avatar = new Avatar;
-
                 $name = md5(uniqid()) . '.' . $file->guessExtension();
                 $file->move($path, $name);
                 $avatar->setName($name)

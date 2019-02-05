@@ -18,10 +18,10 @@ class HomeController extends AbstractController
     {        
         $figures = $repo->findAll();
 
-        $encoders = 'json';
-        $sessionVars = $this->get('session')->all();
-        $serializer = new Serializer;
-        var_dump($serializer->deserialize($sessionVars, Session::class, $encoders));
+        // $encoders = 'json';
+        // $sessionVars = $this->get('session')->all();
+        // $serializer = new Serializer;
+        // var_dump($serializer->deserialize($sessionVars, Session::class, $encoders));
         // die();
 
         return $this->render('tricks/home.html.twig', ['figures' => $figures]);
