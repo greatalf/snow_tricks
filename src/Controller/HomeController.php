@@ -15,6 +15,9 @@ class HomeController extends AbstractController
     {        
         $figures = $repo->findAll();
 
+        var_dump($this->get('session')->all());
+        // die();
+
         return $this->render('tricks/home.html.twig', ['figures' => $figures]);
     }
 }
