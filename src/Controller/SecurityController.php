@@ -103,10 +103,10 @@ class SecurityController extends AbstractController
             
             $avatar = $user->getAvatar();
             
-            if($avatar->getFile() !== NULL)
+            if($avatar !== NULL)
             {                
                 $file = $avatar->getFile();
-                
+
                 $name = md5(uniqid()) . '.' . $file->guessExtension();
                 $file->move($path, $name);
                 $avatar->setName($name)
