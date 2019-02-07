@@ -105,13 +105,15 @@ class SecurityController extends AbstractController
             
             if($avatar !== NULL)
             {                
+                ///le bug de session vient de ces 6 lignes
                 $file = $avatar->getFile();
-
+                
                 $name = md5(uniqid()) . '.' . $file->guessExtension();
                 $file->move($path, $name);
                 $avatar->setName($name)
-                        ->setUser($user);
-
+                ->setUser($user);
+                
+                dd($avatar);
                 $user->setAvatar($avatar);
                 $manager->persist($avatar);
             }
