@@ -125,7 +125,7 @@ class SecurityController extends AbstractController
             
             $manager->persist($user);
             $manager->flush();
-            $this->dd($avatar);
+            $this->dd($avatar->getId());
             
             $this->addFlash(
                 'success',
