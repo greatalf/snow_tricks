@@ -117,10 +117,10 @@ class SecurityController extends AbstractController
                 $avatar->setName($name)
                 ->setUser($user);
                 
-                var_dump($user);
-                $this->dd($avatar);
+                // var_dump($user);
                 // die;
                 $user->setAvatar($avatar);
+                $this->dd($avatar);
                 $manager->persist($avatar);
             }
 
