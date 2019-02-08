@@ -120,12 +120,12 @@ class SecurityController extends AbstractController
                 // var_dump($user);
                 // die;
                 $user->setAvatar($avatar);
-                $this->dd($avatar);
                 $manager->persist($avatar);
             }
-
+            
             $manager->persist($user);
             $manager->flush();
+            $this->dd($avatar);
             
             $this->addFlash(
                 'success',
