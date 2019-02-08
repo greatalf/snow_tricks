@@ -113,7 +113,7 @@ class SecurityController extends AbstractController
                 $avatar->setName($name)
                 ->setUser($user);
                 
-                var_dump($avatar);
+                $this->dd($avatar);
                 // die;
                 $user->setAvatar($avatar);
                 $manager->persist($avatar);
@@ -413,6 +413,13 @@ class SecurityController extends AbstractController
                 'Vous avez bien été déconnecté'
         );
     }
-
+    /**
+     * 
+     */
+    private function dd($var)
+    {
+        var_dump($var);
+        die();
+    }
 
 }
