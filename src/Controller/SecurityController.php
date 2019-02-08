@@ -125,7 +125,6 @@ class SecurityController extends AbstractController
             
             $manager->persist($user);
             $manager->flush();
-            $this->dd($avatar->getId());
             
             $this->addFlash(
                 'success',
@@ -133,6 +132,7 @@ class SecurityController extends AbstractController
             );
             
             return $this->redirectToRoute('security_admin');
+            $this->dd($avatar->getId());
         }
 
         return $this->render('security/editProfile.html.twig', [
@@ -333,6 +333,7 @@ class SecurityController extends AbstractController
      */
     public function admin()
     {
+        $this->dd($avatar->getId());
         return $this->render('security/user.html.twig', [
             'user' => $this->getUser()
         ]);
