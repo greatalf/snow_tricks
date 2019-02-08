@@ -91,7 +91,11 @@ class SecurityController extends AbstractController
      */
     public function profil(Request $request, Objectmanager $manager)
     {
-        $user = $this->getUser();
+
+        $userId = $this->getUser()->getId();
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $userId]);
+        // $this->dd($user);
+        // $user = $this->getUser();
         $form = $this->createForm(EditProfileType::class, $user);
         
         $form->handleRequest($request);
@@ -113,6 +117,7 @@ class SecurityController extends AbstractController
                 $avatar->setName($name)
                 ->setUser($user);
                 
+                var_dump($user);
                 $this->dd($avatar);
                 // die;
                 $user->setAvatar($avatar);
