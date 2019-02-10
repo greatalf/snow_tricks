@@ -90,7 +90,7 @@ class User implements UserInterface
      *
      * @ORM\Column(name="roles", type="array")
      */
-    private $roles;
+    private $userRoles;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -104,10 +104,10 @@ class User implements UserInterface
     
     public function __construct()
     {
-        $this->setRoles(['ROLE_USER']);
+        $this->setUserRoles(['ROLE_USER']);
         $this->figures = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->userRoles = new ArrayCollection();
+        // $this->userRoles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,9 +168,9 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setRoles($roles)
+    public function setRoles($userRoles)
     {
-        $this->roles = $roles;
+        $this->userRoles = $userRoles;
  
         return $this;
     }
@@ -182,7 +182,7 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return $this->roles;
+        return $this->userRoles;
     }
 
     // public function getRoles()
