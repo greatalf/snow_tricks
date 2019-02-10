@@ -86,9 +86,11 @@ class User implements UserInterface
     private $avatar;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="users")
+     * @var array
+     *
+     * @ORM\Column(name="roles", type="array")
      */
-    private $userRoles;
+    private $roles;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -102,6 +104,7 @@ class User implements UserInterface
     
     public function __construct()
     {
+        $this->setRoles(['ROLE_USER']);
         $this->figures = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->userRoles = new ArrayCollection();
@@ -158,14 +161,38 @@ class User implements UserInterface
 
     }
 
+    /**
+     * Set roles
+     *
+     * @param array $roles
+     *
+     * @return User
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+ 
+        return $this;
+    }
+ 
+    /**
+     * Get roles
+     *
+     * @return array
+     */
     public function getRoles()
     {
-        $roles = $this->userRoles->map(function($roles){
-            return $roles->getTitle();
-        })->toArray();
-        $roles[] = 'ROLE_USER';
-        return $roles;
+        return $this->roles;
     }
+
+    // public function getRoles()
+    // {
+    //     $roles = $this->userRoles->map(function($roles){
+    //         return $roles->getTitle();
+    //     })->toArray();
+    //     $roles[] = 'ROLE_USER';
+    //     return $roles;
+    // }
 
     /**
      * @return Collection|Figure[]
