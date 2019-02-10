@@ -4,6 +4,13 @@
 
 {% block body %}
 
+var session : 
+{% for var in app.session %}
+        <p>{{ var }}</p><br>
+    {% endfor %}
+
+    <strong>{{ token }}</strong>
+
     {% for label, messages in app.flashes %}
 		{% for message in messages %}
 			<div class="alert alert-{{ label }}">

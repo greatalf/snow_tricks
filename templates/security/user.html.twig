@@ -2,6 +2,12 @@
 
 {% block body %}
 
+    {% for var in app.session %}
+        <p>var session : </p>
+        <p>{{ var }}</p><br>
+    {% endfor %}
+    <strong>{{ token }}</strong>
+
 	<h1 class="text-center mt-3">Ma page perso</h1>
     <br>
     <hr>

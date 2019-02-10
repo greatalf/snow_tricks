@@ -106,6 +106,9 @@ class SecurityController extends AbstractController
             $user = $form->getData();
             
             $avatar = $user->getAvatar();
+            // $avatar = $request->query->get();
+            // $this->dd($avatar);
+
             
             if($avatar !== NULL)
             {                
@@ -132,10 +135,11 @@ class SecurityController extends AbstractController
             );
             
             return $this->redirectToRoute('security_admin');
-            $this->dd($avatar->getId());
         }
-
+        
+        
         return $this->render('security/editProfile.html.twig', [
+            'token' => $token,
             'form' => $form->createView(),
             'user' => $user
         ]);
@@ -333,8 +337,10 @@ class SecurityController extends AbstractController
      */
     public function admin()
     {
-        $this->dd($avatar->getId());
+        $token = $this->get('security.token_storage')->getToken();
+        
         return $this->render('security/user.html.twig', [
+            'token' => $token,
             'user' => $this->getUser()
         ]);
     }
@@ -396,7 +402,8 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        
+        $token = $this->get('security.token_storage')->getToken();
+
 
         // $this->serialise->get('session');
 
@@ -404,6 +411,7 @@ class SecurityController extends AbstractController
         $username = $utils->getLastUsername();
 
         return $this->render('security/connexion.html.twig', [
+            'token' => $token,
             'hasError' => $error !== null,
             'username' => $username,
         ]);
